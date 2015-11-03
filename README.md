@@ -15,9 +15,7 @@ For everything that `looks like this`, copy and paste into R
 * `install_github("lukereding/redingPlot")`
 * then restart R
 * then you load **redingPlot** as you would any other package: `library(redingPlot)`
-* because the packages that this package depends on don't always load when loading the package, run `library(viridis); library(beeswarm); library(magrittr)`
-  * if you get an error that you haven't installed these packages, run the following line of code: `if (!"magrittr" %in% installed.packages()) install.packages("magrittr"); library(magrittr); if (!"viridis" %in% installed.packages()) install.packages("viridis"); library(viridis); if (!"beeswarm" %in% installed.packages()) install.packages("beeswarm"); library(beeswarm)`
-* try `?scatter` and make sure the help file loads currently. If so, you're all set!
+* try `?scatter` and make sure the help file loads currently, and maybe try one of the examples: `scatter(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",main="scatter() example")`. If it looks good, you're all set!
 
 ----------------
 
