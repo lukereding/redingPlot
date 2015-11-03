@@ -10,8 +10,7 @@ To make things as confusing as possible, the development version of the code is 
 
 For everything that `looks like this`, copy and paste into R
 
-* `install.packages("devtools")`
-* `library(devtools)`
+* `if (!"devtools" %in% installed.packages()) install.packages("devtools"); library(devtools)`
 * `install_github("lukereding/redingPlot")`
 * then restart R
 * then you load **redingPlot** as you would any other package: `library(redingPlot)`
