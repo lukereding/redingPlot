@@ -267,7 +267,7 @@ beeStrip<-function(data,lab=rep(c(),length(data)),point_size=1.4,beeMethod="cent
 #'
 #' @param data list of vectors you want to plot
 #' @param lab labels for each group
-#' @param type what kind of uncertainty do you want to show around the mean? options are "se" for standard error, "sd" for standard deviation, or "ci" for a 95% confidence interval
+#' @param type what kind of uncertainty do you want to show around the mean? options are "se" for standard error, "sd" for standard deviation, or "ci" for a 95 percent confidence interval
 #' @param jitter logical. should the data be jittered?
 #' @param points type of plotting character. defaults to solid point, i.e., 16
 #' @param xlab label for x axis
