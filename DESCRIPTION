@@ -1,0 +1,15 @@
+Package: redingPlot
+Title: Collection of plotting functions
+Version: 0.0.0.9000
+Authors@R: c( person("Luke", "Reding", email = "lukereding@gmail.com", role =
+    c("aut", "cre")))
+Description: Provides functions for plotting in R with an emphasis on plotting
+    relationships between categorical and quantitative variables while actually
+    showing the data.
+Depends:
+    R (>= 3.2.2)
+Imports:
+	dplyr, beeswarm, wesanderson, magrittr, viridis
+License: MIT
+LazyData: true
+RoxygenNote: 5.0.0.9000
