@@ -38,5 +38,3 @@ Functions available at this time:
 * use color thoughtfully. Or just use [viridis](https://bids.github.io/colormap/). Why? (a) It's perceptually uniform. (b) It looks good. (c) It works just as well printed in black and white. (d) It's accessible to people with the most common forms of colorblindness. (e) It works for representing categories or for representing a quantitative variable. (f) You'll never need to justify your color scheme ever again. Note that this is also true of the other colormaps provided in the viridis package (plasma, magma, and inferno), but they don't look as nice.
 
 Some of these things are not implemented (yet) in the graphics in the package.
-
-[![Travis-CI Build Status](https://travis-ci.org/lukereding/redingPlot.svg?branch=master)](https://travis-ci.org/lukereding/redingPlot)
