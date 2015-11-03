@@ -958,6 +958,27 @@ cohens_d <- function(x,y){
 
 ## Add an alpha value to a colour
 # from http://www.magesblog.com/2013/04/how-to-change-alpha-value-of-colours-in.html
+
+
+#' add transparency to a color
+#'
+#' from http://www.magesblog.com/2013/04/how-to-change-alpha-value-of-colours-in.html
+#' 
+#' @param col the color, or vector of colors, you want to add transparency to
+#' @param alpha the amount of transparency. ranges from 0 to 1 inclusive, where 0 is completely transparent and 1 is completely opaque
+#' 
+#' @return color value with transparency added
+#' 
+#' @examples 
+#' "red" %>% addAlpha(0.5)
+#' viridis(5) %>% addAlpha(0.7)
+#' compare:
+#' x <- list(rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5))
+#' simple(x, point_col = plasma(10))
+#' simple(x, point_col = plasma(10) %>% addAlpha(0.5))
+#' 
+#' @export
+
 addAlpha <- function(col, alpha=1){
   if(missing(col))
     stop("Please provide a vector of colours.")
@@ -966,8 +987,3 @@ addAlpha <- function(col, alpha=1){
           rgb(x[1], x[2], x[3], alpha=alpha))  
 }
 
-convert_to_greyscale <- function(col){
-  avg <- mean(col2rgb(col)/255)
-  grey = rgb(red=avg,green=avg,blue=avg,alpha=1)
-  return(grey)
-}
