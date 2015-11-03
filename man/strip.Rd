@@ -14,7 +14,7 @@ strip(data, lab = rep(c(), length(data)), type = "se", jitter = T,
 
 \item{lab}{labels for each group}
 
-\item{type}{what kind of uncertainty do you want to show around the mean? options are "se" for standard error, "sd" for standard deviation, or "ci" for a 95% confidence interval}
+\item{type}{what kind of uncertainty do you want to show around the mean? options are "se" for standard error, "sd" for standard deviation, or "ci" for a 95 percent confidence interval}
 
 \item{jitter}{logical. should the data be jittered?}
 
