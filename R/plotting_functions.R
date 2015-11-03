@@ -59,8 +59,6 @@ cols<-c(ruby,mint,golden,slate,orange,sky)
 #' 
 #' @export
 
-# to do: replace rug place with marginal density plots of each group?
-
 simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_width=3.0,jitter=T,point_col=viridis(length(data)+2)[1:length(data)],y_limits=c(min(unlist(data),na.rm=T),max(unlist(data),na.rm=T)),median=FALSE,rug=TRUE,sample_size=T,IQR=F,...){
   # can't figure out how to make inputting the data more flexible (e.g. with a formula)
   # data_name <- deparse(substitute(data))
@@ -417,7 +415,6 @@ credible_intervals<-function(x,n=100000){
 #'
 #' @export
 
-
 bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T,point_col="#00000080",y_limits=NA,median=FALSE,point_size=1.0,sample_size=TRUE,...){
   par(lwd = 1,family = 'Helvetica')
   
@@ -552,7 +549,6 @@ transform <- function(x,m,b){
 #' 
 #' 
 #' @export
-
 
 scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="red",confidenceInterval=T,plottingCharacter=16,rug = T,...){
   op <- par(no.readonly = TRUE)
@@ -721,7 +717,6 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
 #' 
 #' @export
 
-# TO DO: fix box color argument. can't get boxes to take on the right colors
 beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMethod="center",line_width=3.0,point_col=ifelse(is.list(data) %>% rep(20),viridis(length(data)+1)[1:length(data)],viridis(nlevels(group)+1)[1:nlevels(group)]),y_limits=c(ifelse(is.list(data),min(unlist(data)),min(data)),ifelse(is.list(data),max(unlist(data),max(unlist(data))))),mean=FALSE,sample_size=T,side=-1,stats=T,box_thickness = 0.2,box_color=FALSE,...){
   
   # if response is missing, assume data is a list
