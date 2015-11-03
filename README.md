@@ -7,7 +7,9 @@ To make things as confusing as possible, the development version of the code is 
 ----------------
 
 ## how to install **redingPlot**
-* For everything that `looks like this`, copy and paste into R
+
+For everything that `looks like this`, copy and paste into R
+
 * `install.packages("devtools")`
 * `library(devtools)`
 * `install_github("lukereding/redingPlot")`
