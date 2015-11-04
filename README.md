@@ -18,7 +18,7 @@ Copy and paste everything that looks `like this` into R
 
 ----------------
 
-Functions available at this time:
+#### Functions available at this time:
 * bar() -- barplot with data jittered on top
 * beeStrip() -- plot the data for each group as a histogram, draw line at the mean for each group
 * beeStripBox() -- same as beeStrip, but plot a boxplot alongside each histogram
