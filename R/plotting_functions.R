@@ -313,7 +313,7 @@ strip<-function(data,lab=rep(c(),length(data)),type="se",jitter=T,points=16,xlab
   means<-lapply(data,mean)
   
   # use barplot in base R to get good x axis values
-  x_values <- barplot(unlist(means)) %>% as.vector
+  x_values <- barplot(unlist(means), plot=F) %>% as.vector
   
   
   plot(c(0,x_values[number_groups]+0.2),c(minimum_value,maximum_value),type="n",xaxt="n",yaxt="n",xlab=xlab,...)

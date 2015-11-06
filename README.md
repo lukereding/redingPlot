@@ -2,8 +2,6 @@
 
 redingPlot contains some useful plotting functions. Most of the functions aren't as flexible as your plain vanilla base R plotting functions (e.g. many of the functions only accept the data as a list), but you'll find some better ways to plot things not easily implemented in R. The focus is on plotting the relationships between quantitative and categorical variables while showing the data.
 
-To make things as confusing as possible, the development version of the code is in a [different repo](https://github.com/lukereding/graphics) so that I'm not constantly updating this one. See that repo for some examples of what the plots look like.
-
 ----------------
 
 ## how to install **redingPlot**
@@ -20,11 +18,17 @@ Copy and paste everything that looks `like this` into R
 
 #### Functions available at this time:
 * bar() -- barplot with data jittered on top
+[bar](./examples/bar.pdf)
 * beeStrip() -- plot the data for each group as a histogram, draw line at the mean for each group
+[beeStrip](./examples/beeStrip.pdf)
 * beeStripBox() -- same as beeStrip, but plot a boxplot alongside each histogram
+[beeStripBox](./examples/beeStripBox.pdf)
 * simple() -- plots the mean for each group as a line along the individual data points jittered
+[simple](./examples/simple.pdf)
 * strip() -- plots the mean for each group as a point with along the individual data points jittered
+[strip](./examples/strip.pdf)
 * scatter() -- provides good defaults for a scatterplot. Also automatically performs a linear regression and prints relevant stats to the plot
+[scatter](./examples/scatter.pdf)
 
 ---------------
 #### these plots are designed with the following philosophy in mind:

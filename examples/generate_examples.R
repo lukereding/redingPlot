@@ -2,9 +2,11 @@
 
 library(redingPlot)
 
+setwd("~/Documents/redingPlot/examples/")
+
 # define height and width
-h = 6
-w = 5
+h = 8
+w = 7
 
 ## beeStripBox
 pdf("./beeStripBox.pdf", height = h, width = w)
@@ -28,10 +30,10 @@ dev.off()
 
 ## strip
 pdf("./strip.pdf", height = h, width = w)
-strip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="strip()",xlab="species",mean_col="black",point_size=1.4,type="ci") dev.off()
+strip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="strip()",xlab="species",mean_col="black",point_size=1.4,type="ci")
 dev.off()
 
 ## scatter
-pdf("./scatter.pdf", height = h, width = w)
+pdf("./scatter.pdf", height = 5, width = 6)
 scatter(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",main="scatter() example")
 dev.off()
