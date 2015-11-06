@@ -22,6 +22,9 @@ Copy and paste everything that looks `like this` into R
 ----------------
 
 ###available functions:
+
+To find the code to generate these plots and other examples, check the help files (i.e. `?bar`).
+
 * **bar()** -- barplot with data jittered on top
 ![bar](https://github.com/lukereding/redingPlot/raw/master/examples/bar.png)
 * **beeStrip()** -- plot the data for each group as a histogram, draw line at the mean for each group

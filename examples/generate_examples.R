@@ -5,8 +5,8 @@ library(redingPlot)
 setwd("~/Documents/redingPlot/examples/")
 
 # define height and width
-h = 8
-w = 7
+h = 800*.7
+w = 700*.8
 
 ## beeStripBox
 png("./beeStripBox.png", height = h, width = w)
@@ -14,12 +14,12 @@ data(iris); beeStripBox(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepa
 dev.off()
 
 ## bar
-png("./bar.png", height = h, width= w)
+png("./bar.png", height = h*0.7, width= w)
 bar(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),median=T,CI=T,lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="bar() example")
 dev.off()
 
 ## beeStrip
-png("./beeStrip.png", height = h, width = 6)
+png("./beeStrip.png", height = h, width = w)
 beeStrip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="beeStrip()",xlab="species") 
 dev.off()
 
@@ -34,6 +34,6 @@ strip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filte
 dev.off()
 
 ## scatter
-png("./scatter.png", height = 5, width = 6)
+png("./scatter.png", height = 500*.8, width = 600*.8)
 scatter(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",main="scatter() example")
 dev.off()
