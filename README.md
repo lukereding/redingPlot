@@ -15,8 +15,8 @@ Copy and paste everything that looks `like this` into R
 
 * `if (!"devtools" %in% installed.packages()) install.packages("devtools"); library(devtools)`
 * `install_github("lukereding/redingPlot")`
-* then restart R (you only have to do this when you first install redingPlot)
-* then you load redingPlot as you would any other package: `library(redingPlot)`
+*  restart R--you only have to do this when you first install redingPlot
+*  load redingPlot as you would any other package: `library(redingPlot)`
 * try `?scatter` and make sure the help file loads currently, and maybe try one of the examples: `scatter(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",main="scatter() example")`. If it looks good, you're all set!
 
 ----------------
