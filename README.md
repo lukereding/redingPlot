@@ -4,7 +4,12 @@ redingPlot contains some useful plotting functions. Most of the functions aren't
 
 ----------------
 
-## how to install **redingPlot**
+## what's here
+  * [installing redingPlot**redingPlot**](###how to install **redingPlot**)
+  * [available functions](#### available functions:)
+  * [philosophy](#### these plots are designed with the following philosophy in mind:)
+
+### how to install **redingPlot**
 
 Copy and paste everything that looks `like this` into R
 
@@ -16,18 +21,18 @@ Copy and paste everything that looks `like this` into R
 
 ----------------
 
-#### Functions available at this time:
-* bar() -- barplot with data jittered on top
+### available functions:
+* **bar()** -- barplot with data jittered on top
 ![bar](https://github.com/lukereding/redingPlot/raw/master/examples/bar.png)
-* beeStrip() -- plot the data for each group as a histogram, draw line at the mean for each group
+* **beeStrip()** -- plot the data for each group as a histogram, draw line at the mean for each group
 ![beeStrip](https://github.com/lukereding/redingPlot/raw/master/examples/beeStrip.png)
-* beeStripBox() -- same as beeStrip, but plot a boxplot alongside each histogram
+* **beeStripBox()** -- same as beeStrip, but plot a boxplot alongside each histogram
 ![beeStripBox](https://github.com/lukereding/redingPlot/raw/master/examples/beeStripBox.png)
-* simple() -- plots the mean for each group as a line along the individual data points jittered
+* **simple()** -- plots the mean for each group as a line along the individual data points jittered
 ![simple](https://github.com/lukereding/redingPlot/raw/master/examples/simple.png)
-* strip() -- plots the mean for each group as a point with along the individual data points jittered
+* **strip()** -- plots the mean for each group as a point with along the individual data points jittered
 ![strip](https://github.com/lukereding/redingPlot/raw/master/examples/strip.png)
-* scatter() -- provides good defaults for a scatterplot. Also automatically performs a linear regression and prints relevant stats to the plot
+* **scatter()** -- provides good defaults for a scatterplot. Also automatically performs a linear regression and prints relevant stats to the plot
 ![scatter](https://github.com/lukereding/redingPlot/raw/master/examples/scatter.png)
 
 ---------------
