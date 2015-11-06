@@ -5,11 +5,11 @@ redingPlot contains some useful plotting functions. Most of the functions aren't
 ----------------
 
 ## what's here
-  * [installing redingPlot**redingPlot**](###how to install **redingPlot**)
-  * [available functions](#### available functions:)
-  * [philosophy](#### these plots are designed with the following philosophy in mind:)
+  * [installing redingPlot](https://github.com/lukereding/redingPlot#how-to-install-redingplot)
+  * [available functions](https://github.com/lukereding/redingPlot#available-functions)
+  * [philosophy](https://github.com/lukereding/redingPlot#these-plots-are-designed-with-the-following-philosophy-in-mind)
 
-### how to install **redingPlot**
+###how to install **redingPlot**
 
 Copy and paste everything that looks `like this` into R
 
@@ -21,7 +21,7 @@ Copy and paste everything that looks `like this` into R
 
 ----------------
 
-### available functions:
+###available functions:
 * **bar()** -- barplot with data jittered on top
 ![bar](https://github.com/lukereding/redingPlot/raw/master/examples/bar.png)
 * **beeStrip()** -- plot the data for each group as a histogram, draw line at the mean for each group
@@ -36,7 +36,7 @@ Copy and paste everything that looks `like this` into R
 ![scatter](https://github.com/lukereding/redingPlot/raw/master/examples/scatter.png)
 
 ---------------
-#### these plots are designed with the following philosophy in mind:
+####these plots are designed with the following philosophy in mind:
 
 * every part of the graph should have a clear purpose
 * show the data, some summary of the data or parameter estimate of interest, and some measure of variability about that estimate
