@@ -18,17 +18,17 @@ Copy and paste everything that looks `like this` into R
 
 #### Functions available at this time:
 * bar() -- barplot with data jittered on top
-[bar](https://github.com/lukereding/redingPlot/raw/master/examples/bar.pdf)
+![bar](https://github.com/lukereding/redingPlot/raw/master/examples/bar.png)
 * beeStrip() -- plot the data for each group as a histogram, draw line at the mean for each group
-[beeStrip](https://github.com/lukereding/redingPlot/raw/master/examples/beeStrip.pdf)
+![beeStrip](https://github.com/lukereding/redingPlot/raw/master/examples/beeStrip.png)
 * beeStripBox() -- same as beeStrip, but plot a boxplot alongside each histogram
-[beeStripBox](https://github.com/lukereding/redingPlot/raw/master/examples/beeStripBox.pdf)
+![beeStripBox](https://github.com/lukereding/redingPlot/raw/master/examples/beeStripBox.png)
 * simple() -- plots the mean for each group as a line along the individual data points jittered
-[simple](https://github.com/lukereding/redingPlot/raw/master/examples/simple.pdf)
+![simple](https://github.com/lukereding/redingPlot/raw/master/examples/simple.png)
 * strip() -- plots the mean for each group as a point with along the individual data points jittered
-[strip](https://github.com/lukereding/redingPlot/raw/master/examples/strip.pdf)
+![strip](https://github.com/lukereding/redingPlot/raw/master/examples/strip.png)
 * scatter() -- provides good defaults for a scatterplot. Also automatically performs a linear regression and prints relevant stats to the plot
-[scatter](https://github.com/lukereding/redingPlot/raw/master/examples/scatter.pdf)
+![scatter](https://github.com/lukereding/redingPlot/raw/master/examples/scatter.png)
 
 ---------------
 #### these plots are designed with the following philosophy in mind:
