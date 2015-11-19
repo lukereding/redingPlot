@@ -14,13 +14,13 @@ data(iris); beeStripBox(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepa
 dev.off()
 
 ## bar
-png("./bar.png", height = h*0.7, width= w)
+png("./bar.png", height = h*0.7, width= w/2)
 bar(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),median=T,CI=T,lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="bar() example")
 dev.off()
 
 ## beeStrip
 png("./beeStrip.png", height = h, width = w)
-beeStrip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="beeStrip()",xlab="species") 
+beeStrip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="beeStrip()",xlab="species")
 dev.off()
 
 ## simple
