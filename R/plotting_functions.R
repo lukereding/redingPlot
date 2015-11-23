@@ -1,10 +1,10 @@
-#cat("Plotting functions:\nstrip -- show the average as a point with option SE / CI, shows the data\nbar -- barplot, still needs some work\nscatter -- scatterplot\nmod -- modified box plot\nhistogram -- self-explanatory\nsimple -- draws a line for the mean of each group and plots the data points\nbeeStrip -- like simple, but plotted using the beeswarm package so no alpha is needed\naddAlpha -- add transparancy to any color. pass the color and alpha value in [0,1]\n\nStats functions:\nmonte_unpaired -- monte carlo permutation test, two unpaired samples\nmonte_paired -- monte carlo permutation test, two paired samples\n")  
+#cat("Plotting functions:\nstrip -- show the average as a point with option SE / CI, shows the data\nbar -- barplot, still needs some work\nscatter -- scatterplot\nmod -- modified box plot\nhistogram -- self-explanatory\nsimple -- draws a line for the mean of each group and plots the data points\nbeeStrip -- like simple, but plotted using the beeswarm package so no alpha is needed\naddAlpha -- add transparancy to any color. pass the color and alpha value in [0,1]\n\nStats functions:\nmonte_unpaired -- monte carlo permutation test, two unpaired samples\nmonte_paired -- monte carlo permutation test, two paired samples\n")
 if (!"dplyr" %in% installed.packages()) install.packages("dplyr")
 if (!"wesanderson" %in% installed.packages()) install.packages("wesanderson")
 if (!"magrittr" %in% installed.packages()) install.packages("magrittr")
 if (!"beeswarm" %in% installed.packages()) install.packages("beeswarm")
 if (!"viridis" %in% installed.packages()) install.packages("viridis")
-library(beeswarm) 
+library(beeswarm)
 library(dplyr)
 library(wesanderson)
 library(magrittr)
@@ -33,9 +33,9 @@ cols<-c(ruby,mint,golden,slate,orange,sky)
 
 
 #' line for mean + data
-#' 
+#'
 #' plots each vector in your list as a group with the data jittered; draws a line for the mean
-#' 
+#'
 #' @param data input your data as a list where length(list) = number of groups
 #' @param lab labels for groups
 #' @param point_size size of points
@@ -48,28 +48,28 @@ cols<-c(ruby,mint,golden,slate,orange,sky)
 #' @param rug plot 1-D rug plot?
 #' @param sample_size defaults to true
 #' @param IQR include line for IQR? defaults to false
-#' 
+#'
 #' @examples x <- list(rnorm(40,40,5),rnorm(20,35,2),rnorm(25,41,2))
-#' @examples simple(x,main="simple() defaults") # using the defaults
-#' @examples simple(x,jitter=F) # without jitter doesn't look as good
-#' @examples simple(x,line_col="black",point_col=c(ruby,mint,slate),ylab="measurement",xlab="group",lab=c("A","B","C"),rug=T)
-#' @examples simple(list(rnorm(50,50,5),rnorm(30,40,6),rnorm(10,60,2),rnorm(60,50,10),rnorm(30,39,4)),point_col=wes_palette(5, name = "Zissou"),line_color="black",median=T,main="simple() dressed up")
-#' @examples simple(list(rnorm(24,10,2),rchisq(20,5),rexp(40,1/5),runif(40,5,15)),lab=c("normal","chi-squared","exponetial","uniform"),point_col=c(ruby,mint,slate,"goldenrod"),line_color="black",median=T)
-#' @examples simple(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="simple()",xlab="species")
-#' 
+#' simple(x,main="simple() defaults") # using the defaults
+#' simple(x,jitter=F) # without jitter doesn't look as good
+#' simple(x,line_col="black",point_col=c(ruby,mint,slate),ylab="measurement",xlab="group",lab=c("A","B","C"),rug=T)
+#'  simple(list(rnorm(50,50,5),rnorm(30,40,6),rnorm(10,60,2),rnorm(60,50,10),rnorm(30,39,4)),point_col=wes_palette(5, name = "Zissou"),line_color="black",median=T,main="simple() dressed up")
+#'  simple(list(rnorm(24,10,2),rchisq(20,5),rexp(40,1/5),runif(40,5,15)),lab=c("normal","chi-squared","exponetial","uniform"),point_col=c(ruby,mint,slate,"goldenrod"),line_color="black",median=T)
+#'  simple(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="simple()",xlab="species")
+#'
 #' @export
 
 simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_width=3.0,jitter=T,point_col=viridis(length(data)+2)[1:length(data)],y_limits=c(min(unlist(data),na.rm=T),max(unlist(data),na.rm=T)),median=FALSE,rug=TRUE,sample_size=T,IQR=F,...){
   # can't figure out how to make inputting the data more flexible (e.g. with a formula)
   # data_name <- deparse(substitute(data))
-#   
+#
 #   # consider response~some_factor:
 #   if(grep("~",data_name) %>% length == 1){
 #     grouping <- strsplit(data_name,"~")[[3]][1]
 #     data <- strsplit(data_name,"~")[[2]][1]
-#     
+#
 #     grouping <- get(grouping,env=globalenv())
-#     
+#
 #     # convert to a list
 #     x<-list()
 #     for(i in 1:length(grouping)){
@@ -77,7 +77,7 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
 #     }
 #     data <- x
 #   }
-#   
+#
 #   # consider dataframe, factor
 #   else if(is.na(grouping)==FALSE){
 #     x<-list()
@@ -86,7 +86,7 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
 #     }
 #     data <- x
 #   }
-  
+
   # consdier a list
   if(is.list(data)==FALSE){
     stop("however you input the data, try some other way")
@@ -94,13 +94,13 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
   number_groups<-length(data)
   # to get nice x values for plotting, we'll use those generate by barplot()
   x_values<-barplot(rep(1,number_groups),plot=F)
-  
+
   # create the plot
   plot(c(x_values[1]*0.4,x_values[length(x_values)]*1.2),y_limits,type="n",xaxt="n",yaxt="n",bty="l",...)
-  
+
   # create y axis with the numbers the correct direction
   axis(2,las=2)
-  
+
   # find range of x:
   if(length(data)==1){
     xRange <- 0.5
@@ -108,12 +108,12 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
   else{
     xRange <- range(x_values,na.rm=T)[2]-range(x_values,na.rm=T)[1]
   }
-  
+
   # plot the mean as a line
   for(i in 1:length(data)){
     lines(x=c(x_values[i]-0.2,x_values[i]+0.2),y=c(rep(mean(data[[i]],na.rm=T),2)),col=line_color,lwd=line_width)
   }
-  
+
   # to plot the IQR:
   if(IQR==TRUE){
     p<-boxplot(data,plot=F)
@@ -124,13 +124,13 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
 
   # create x axis
   axis(side=1,at=x_values,labels=lab)
-  
+
   # make point_col length equal to number of groups
   if(length(point_col==1)){
     point_col = rep(point_col,number_groups)
   }
-  
-  # draw data points 
+
+  # draw data points
   if(jitter==T){
     for(i in 1:number_groups){
       points(x=rep(x_values[i],length(data[[i]])) %>% jitter(amount = 0.05),y=data[[i]],pch=16,col=point_col[i],cex=point_size)
@@ -141,19 +141,19 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
       points(x=rep(x_values[i],length(data[[i]])),y=data[[i]],pch=16,col=point_col[i],cex=point_size)
     }
   }
-  
+
   # for rug plotting:
   if(rug==T){
     for(i in 1:length(data)){
       rug(data[[i]],side=4,col=addAlpha(point_col[i],0.4),lwd=4)
     }
   }
-  
+
   # for plotting the median as a diamond:
   if(median==T){
     points(x=x_values,y=unlist(lapply(data,median)),pch=5,col=line_color,cex=1.5,lwd=3)
   }
-  
+
   # for plotting sample size below each group
   if(sample_size==TRUE){
     for(i in 1:length(data)){
@@ -175,7 +175,7 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
 #'
 #' plots each vector in your list as a group with the data forming a histogram; draws a line at the mean for eaach group
 #'
-#' @param data list of groups you want to plot where length(data) = number of groups 
+#' @param data list of groups you want to plot where length(data) = number of groups
 #' @param lab labels for each group
 #' @param point_size size of the individual data points. default is 1.4
 #' @param beeMethod see beeswarm(). default is "center"
@@ -199,30 +199,30 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
 #' @export
 
 beeStrip<-function(data,lab=rep(c(),length(data)),point_size=1.4,beeMethod="center",line_color="red",line_width=3.0,jitter=T,point_col=viridis(length(data)+2)[1:length(data)],y_limits=c(min(unlist(data),na.rm=T),max(unlist(data),na.rm=T)),median=FALSE,rug=TRUE,sample_size=T,IQR=F,side=-1,...){
-  
+
   # make sure the data is a list; in the future I need to change the code to accomodate other types of data input (e.g. dataframes with y~x)
   if(is.list(data)!=TRUE){
     stop("input your data as a list")
   }
-  
+
   number_groups<-length(data)
-  
+
   # create the plot
   beeswarm(data,method=beeMethod,priority="density",pch=16,col=point_col,cex=point_size,side = side,bty='l',yaxt="n",labels=lab,...)
   # create y axis with the numbers the correct direction
   axis(2,las=2)
-  
+
   x_values = 1:number_groups
-  
+
   # find range of x:
   xRange <- length(data)
-  
+
   # plot the mean as a line
   for(i in 1:length(data)){
     scale = 0.05
     lines(x=c(x_values[i]-(scale*xRange),x_values[i]+(scale*xRange)),y=c(rep(mean(data[[i]],na.rm=T),2)),col=line_color,lwd=line_width)
   }
-  
+
   # to plot the IQR:
   if(IQR==TRUE){
     p<-boxplot(data,plot=F)
@@ -230,27 +230,27 @@ beeStrip<-function(data,lab=rep(c(),length(data)),point_size=1.4,beeMethod="cent
       lines(x=c(x_values[i],x_values[i]),y=c(p$stats[2,i],p$stats[4,i]),col=line_color,lwd=line_width)
     }
   }
-  
+
   # create x axis
   axis(side=1,at=x_values,labels=lab)
-  
+
   # make point_col length equal to number of groups
   if(length(point_col==1)){
     point_col = rep(point_col,number_groups)
   }
-  
+
   # for rug plotting:
   if(rug==T){
     for(i in 1:length(data)){
       rug(data[[i]],side=4,col=addAlpha(point_col[i],0.4),lwd=4)
     }
   }
-  
+
   # for plotting the median as a diamond:
   if(median==T){
     points(x=x_values,y=unlist(lapply(data,median)),pch=5,col=line_color,cex=1.5,lwd=3)
   }
-  
+
   # for plotting sample size below each group
   if(sample_size==TRUE){
     for(i in 1:length(data)){
@@ -263,7 +263,7 @@ beeStrip<-function(data,lab=rep(c(),length(data)),point_size=1.4,beeMethod="cent
 
 #' plot categorical x quantitative data jittered
 #'
-#' plots each vector in your list as a group with the data jittered, draws a point at the mean. very similar to simple() 
+#' plots each vector in your list as a group with the data jittered, draws a point at the mean. very similar to simple()
 #'
 #' @param data list of vectors you want to plot
 #' @param lab labels for each group
@@ -277,51 +277,51 @@ beeStrip<-function(data,lab=rep(c(),length(data)),point_size=1.4,beeMethod="cent
 #' @param mean_col color of the point for the mean. defaults to "red"
 #' @param cols vector of colors for the groups. defaults to viridis colors
 #' @param ... other arguments to pass to be par()
-#' 
+#'
 #' @return None
-#' 
-#' @examples 
+#'
+#' @examples
 #' strip(list(rnorm(50,5),rnorm(20,10)))
 #' strip(list(rpois(50,5),rpois(20,3),rnorm(100,7)),type="ci",lab=c("a","b","c"),xlab="group",ylab="response")
 #' strip(list(rpois(50,5),rpois(20,3),rnorm(100,7),rnorm(45,2),rnorm(90,9)),type="ci",lab=c("a","b","c","d","e"),xlab="group",ylab="value",mean_col="black",col=viridis(7)[1:5] %>% addAlpha(0.5))
 #' strip(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="strip()",xlab="species",mean_col="black",point_size=1.4,type="ci")
-#' 
+#'
 #' @export
 
 strip<-function(data,lab=rep(c(),length(data)),type="se",jitter=T,points=16,xlab="",ymin="determine",ymax="determine",point_size=1.2,mean_col = "red",cols = viridis(length(data)+2)[1:length(data)],...){
   par(bty="l")
-  
+
   # error checking:
   # if there are NAs in your dataset, throw an error
   if(length(Filter(is.na,data))>0){
     stop("there are NAs in your list")
   }
-  
+
   number_groups<-length(data)
   factor_names<-lab
-  
-  
+
+
   if(ymin=="determine"&ymax=="determine"){
     ymin <- min(unlist(data))
     ymax <- max(unlist(data))
   }
-  
+
   maximum_value=ymax*1.05
   minimum_value=ymin*0.95
-  
+
   # use lapply to extract the means
   means<-lapply(data,mean)
-  
+
   # use barplot in base R to get good x axis values
   x_values <- barplot(unlist(means), plot=F) %>% as.vector
-  
-  
+
+
   plot(c(0,x_values[number_groups]+0.2),c(minimum_value,maximum_value),type="n",xaxt="n",yaxt="n",xlab=xlab,...)
   # create y axis with the numbers the correct direction
   axis(2,las=2)
-  
+
   offset<- 0.15
-  
+
   if(type=="se"){
     std_dev<-lapply(data,sd)
     for(i in 1:length(data)){
@@ -336,7 +336,7 @@ strip<-function(data,lab=rep(c(),length(data)),type="se",jitter=T,points=16,xlab
       arrows(x_values[i]+offset,means[[i]]-std_dev[[i]],x_values[i]+offset,means[[i]]+std_dev[[i]],angle=90,code=3,length=0,lwd=2)
     }
   }
-  
+
   if(type=="ci"){
     std_dev<-lapply(data,sd)
     for(i in 1:length(data)){
@@ -344,23 +344,23 @@ strip<-function(data,lab=rep(c(),length(data)),type="se",jitter=T,points=16,xlab
       arrows(x_values[i]+offset,t.test(data[[i]])$conf[1],x_values[i]+offset,t.test(data[[i]])$conf[2],angle=90,code=3,length=0,lwd=2)
     }
   }
-  
+
   # plot the means
   for(i in 1:length(data)){
     points(x=x_values[i]+offset,y=means[[i]],cex=point_size*1.1,pch=16,col=mean_col)
   }
-  
-  
+
+
   axis(side=1,at=x_values,labels=lab)
-  
-  
+
+
   if(jitter==F){
     # now to draw the points
     for(i in 1:number_groups){
       points(x=rep(x_values[i]-offset,length(data[[i]])),y=data[[i]],pch=points,col=cols[i])
     }
   }
-  
+
   else if(jitter==T){
     for(i in 1:number_groups){
       points(x=rep(x_values[i]-offset,length(data[[i]])) %>% jitter(amount=0.1),y=data[[i]],pch=points,col=cols[i],cex=point_size)
@@ -390,7 +390,7 @@ credible_intervals<-function(x,n=100000){
 #' plot categorical x quantitative data as bar plot
 #'
 #' plots each vector in your list as a group as a bar plot with the data on top, jittered
-#' 
+#'
 #' @param sim list of vectors you want to plot
 #' @param lab labels for each group
 #' @param CI logical. should a 95% confidence interval be drawn for each group? defaults to F
@@ -403,11 +403,11 @@ credible_intervals<-function(x,n=100000){
 #' @param point_size size of data points. defaults to 1.0. increase to make the data points bigger.
 #' @param sample_size logical. plot sample size under each bar?
 #' @param ... other arguments to be passed to par()
-#' 
-#' 
+#'
+#'
 #' @return matrix showing x axis positions of the bars
-#' 
-#' @examples 
+#'
+#' @examples
 #' bar(list(rnorm(20,5),rnorm(15,5)),lab=c("A","B"),xlab="group",ylab="response",jitter=F)
 #' bar(list(rnorm(20,5),rnorm(15,5)),CI=T,lab=c("A","B"),xlab="group",ylab="response",jitter=F,bar_color=viridis(3)[1:2])
 #' bar(list(rnorm(20,5),rnorm(15,5),rnorm(200,50),rnorm(50,1),rnorm(34,19)),CI=T,bar_color=viridis(7)[1:5])
@@ -417,30 +417,30 @@ credible_intervals<-function(x,n=100000){
 
 bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T,point_col="#00000080",y_limits=NA,median=FALSE,point_size=1.0,sample_size=TRUE,...){
   par(lwd = 1,family = 'Helvetica')
-  
+
   if(is.list(sim)==F){
     stop("the first argument needs to be a list of the vectors you want to plot")
   }
-  
+
   means<-vector(length=length(sim))
   for(i in 1:length(sim)){
     means[i]<-mean(sim[[i]])
   }
-  
+
   max_value = 0
   for(i in 1:length(sim)){
     if(max(sim[[i]],na.rm=TRUE) >= max_value){
-      max_value <- max(sim[[i]]) 
+      max_value <- max(sim[[i]])
     }
   }
-  
+
   min_value = 0
   for(i in 1:length(sim)){
     if(min(sim[[i]],na.rm=TRUE) <= min_value){
-      min_value <- min(sim[[i]]) 
+      min_value <- min(sim[[i]])
     }
   }
-  
+
   if(is.na(y_limits)==T){
     (p<-barplot(means,bty="l",ylim=c(floor(min_value),ceiling(max_value)+(0.1*max_value)),axes=F,col=bar_color,border=NA,...))
   }
@@ -450,15 +450,15 @@ bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T
   #(p<-barplot(means,bty="l",space=0.4,ylim=ifelse(y_limits==NA,c(floor(min_value),ceiling(max_value)+(0.1*max_value)),y_limits),axes=F,col=bar_color,border=NA,...))
   axis(1,at=p,lwd=1,cex=1.5,labels=lab,tick=F)
   axis(2,cex=1.5,lwd=1,las=2)
-  
+
   if(sample_size==TRUE){
     text(x=p,y=0, pos=3, labels=paste("n = ",lapply(sim, length) ) )
   }
-  
+
   if(SE==T & CI ==T){
     stop("can't plot both a conf. interval and a standard error. choose only one.")
   }
-  
+
   # for 95% CIs:
   # why doesn't this work?
   if(CI==T){
@@ -469,7 +469,7 @@ bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T
       #lines(rep(p[i],2),y=c(mean(sim[[i]]),mean(sim[[i]])+(se*1.96)),lwd=5)
     }
   }
-  
+
   if(SE==T){
     for(i in 1:length(sim)){
       # find the stardard error
@@ -479,14 +479,14 @@ bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T
       #lines(rep(p[i],2),y=c(mean(sim[[i]]),mean(sim[[i]])+se),lwd=5)
     }
   }
-  
+
   if(jitter==T){
     x_vals = p + 0.2
     for(i in 1:length(sim)){
       points(x=rep(x_vals[i],length(sim[[i]]))+rnorm(length(sim[[i]]),0,0.05),y=sim[[i]],pch=16,col=point_col,cex=point_size)
     }
   }
-  
+
   # plot median plots
   if(median==T){
     medians<-vector(length=length(sim))
@@ -495,7 +495,7 @@ bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T
     }
     points(p,medians,pch=5)
   }
-  
+
   return(p)
 }
 
@@ -527,7 +527,7 @@ transform <- function(x,m,b){
 #' plot quantitative x quantitative data as scatter plot
 #'
 #' scatter plot with nice defaults. automatically tests for a linear association between your two variables, draws regression lines, prints stats to the plot, etc.
-#' 
+#'
 #' @param x vector of data for the x axis
 #' @param y vector of data for the y axis
 #' @param xlab x label
@@ -540,34 +540,34 @@ transform <- function(x,m,b){
 #' @param plottingCharacter type of plotting character. defaults to 16, i.e., solid point
 #' @param rug logical. plot a rug plot along the x and y axes? defaults to TRUE
 #' @param ... other arguments to par()
-#' 
+#'
 #' @return None
-#' 
-#' @examples 
+#'
+#' @examples
 #' scatter(rnorm(50,50,10),rnorm(50,30,3))
 #' scatter(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",main="scatter() example")
-#' 
-#' 
+#'
+#'
 #' @export
 
 scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="red",confidenceInterval=T,plottingCharacter=16,rug = T,...){
   op <- par(no.readonly = TRUE)
   par(lwd=1,cex=1,bg="white",xpd=FALSE)
-  
+
   # error checking
   if(length(x)!=length(y)){
     stop("x and y lengths differ")
   }
-  
+
   # do the actual plotting
   plot(x,y,xlab=xlab,ylab=ylab,pch=plottingCharacter,yaxt='n',bty="l",col=color,cex.lab=1.2,...)
   axis(2, las=2)
-  
+
   p.value<-summary(lm(y~x))$coefficients[2,4]
   c<-summary(lm(y~x))$coefficients[2,1]
   r_squared <- summary(lm(y~x))$r.squared %>% round(3)
   sample_size <- length(x)
-  
+
   # draw the line of best fit
   if(line==T){
     if(p.value<=0.05){
@@ -577,7 +577,7 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
       line(x,y,lwd=2,lty=2,color=line_col)
     }
   }
-  
+
   # adding confidence intervals around the regression line
   if(confidenceInterval==T){
     model<-lm(y~x)
@@ -586,20 +586,20 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
     lines(xVals,conf[,2],col="#00000050",lty=2,lwd=2)
     lines(xVals,conf[,3],col="#00000050",lty=2,lwd=2)
   }
-  
+
   # adding 1-d 'rug plots' to the bottom and right of the plot to show distribution of each variable
   if(rug==T){
     rug(x,side=1,col="#00000070",lwd=2)
     rug(y,side=2,col="#00000070",lwd=2)
   }
-  
+
   # add important stats to the plot
   if(stats==T){
     rp = vector('expression',3)
     rp[1] = substitute(expression(r^2 == r_squared),list(r_squared = format(r_squared,dig=3)))[2]
     rp[3] = substitute(expression(p == p.value), list(p.value = format(p.value, digits = 2)))[2]
     rp[2] = substitute(expression(n == sample_size), list(sample_size = format(sample_size, digits = 2)))[2]
-    
+
     if(c>0){
       legend(x="bottomright",bty="n",legend=rp, y.intersp=1.2,cex=0.9,inset = 0.01)
     }
@@ -607,7 +607,7 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
       legend(x="bottomleft",bty="n",legend=rp,y.intersp=0.8,inset = 0.05)
     }
   }
-  
+
   # reset the par values
   on.exit(par(op))
 }
@@ -619,14 +619,14 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
 # beeStripMod(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepal length",main="beeStripMod() example")
 
 beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMethod="center",line_width=3.0,jitter=T,point_col=ifelse(is.list(data) %>% rep(20),viridis(length(data)+1)[1:length(data)],viridis(nlevels(group)+1)[1:nlevels(group)]),y_limits=c(ifelse(is.list(data),min(unlist(data)),min(data)),ifelse(is.list(data),max(unlist(data),max(data)))),mean=FALSE,sample_size=T,side=-1,red_median=F,stats=T,...){
-  
+
   # if response is missing, assume data is a list
   if(missing(group)){
     if(is.list(data)==FALSE){
       stop("enter your data either as a list or as a response variable and factor within a dataframe")
     }
   }
-  
+
   if(is.list(data)){
     print("data are a list")
     number_groups<-length(group)
@@ -637,7 +637,7 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     # create y axis with the numbers the correct direction
     axis(2,las=2)
   }
-  
+
   else{
     number_groups<-nlevels(group)
     boxplot_table<-boxplot(data~group,plot=F)
@@ -645,7 +645,7 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     beeswarm(data~group,method=beeMethod,priority="density",pch=16,col=point_col,cex=point_size,side = side,bty='l',yaxt="n",labels=lab,...)
     # create y axis with the numbers the correct direction
     axis(2,las=2)
-    
+
     if(stats==T){
       print(TukeyHSD(aov(data~group)))
       x = summary(aov(data~group))[[1]][["Pr(>F)"]][1] %>% round(4)
@@ -657,13 +657,13 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
       }
       text(x=(median(1:number_groups)),y=max(data),labels=paste("anova, ",x,sep=""),pos=1)
     }
-    
+
   }
-  
+
   x_values = 1:number_groups
   point_col = point_col[1:number_groups]
   scale = 0.05
-  
+
   # plot the mean as a point
   for(i in 1:number_groups){
     points(x=x_values[i]+(scale*number_groups), y=boxplot_table$stats[3,i],cex=1.1,pch=16,col=ifelse(red_median==T,"red",point_col[i]))
@@ -673,8 +673,8 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     lines(x=rep(x_values[i]+(scale*number_groups),2),y=c(boxplot_table$stats[1,i],boxplot_table$stats[2,i]),lwd=2)
     lines(x=rep(x_values[i]+(scale*number_groups),2),y=c(boxplot_table$stats[4,i],boxplot_table$stats[5,i]),lwd=2)
   }
-  
-  
+
+
   # for plotting sample size below each group
   if(sample_size==TRUE){
       text(x=x_values+(scale*number_groups),y=min(data)*0.99,paste("n = ",boxplot_table$n,sep=""),col="grey20")
@@ -688,10 +688,10 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
 #data(iris)
 # beeStripBox(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepal length",main="beeStripBox() example")
 
-#' plot quantitative x categorical data 
+#' plot quantitative x categorical data
 #'
-#' plots a histogram of your individual data points alongside a boxplot for each group 
-#' 
+#' plots a histogram of your individual data points alongside a boxplot for each group
+#'
 #' @param data list of groups you want to plot, or, if group is not left blank, a data frame
 #' @param group if you gave a dataframe for data, group is the name of the column containing group identities
 #' @param lab labels for groups
@@ -707,25 +707,25 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
 #' @param box_thickness thickness of the lines that form the boxplot. defaults to 0.2
 #' @param box_color defaults to FALSE. color of the lines that form the boxes
 #' @param ... other arguments to pass to par()
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' @return ANOVA results
-#' 
-#' @examples 
+#'
+#' @examples
 #' data(iris); beeStripBox(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepal length",main="beeStripBox() example")
-#' 
+#'
 #' @export
 
 beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMethod="center",line_width=3.0,point_col=ifelse(is.list(data) %>% rep(20),viridis(length(data)+1)[1:length(data)],viridis(nlevels(group)+1)[1:nlevels(group)]),y_limits=c(ifelse(is.list(data),min(unlist(data)),min(data)),ifelse(is.list(data),max(unlist(data),max(unlist(data))))),mean=FALSE,sample_size=T,side=-1,stats=T,box_thickness = 0.2,box_color=FALSE,...){
-  
+
   # if response is missing, assume data is a list
   if(missing(group)){
     if(is.list(data)==FALSE){
       stop("enter your data either as a list or as a response variable and factor within a dataframe")
     }
   }
-  
+
   if(is.list(data)){
     print("data are a list")
     number_groups<-length(data)
@@ -738,7 +738,7 @@ beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     axis(2,las=2)
     boxplot(data, main = "", axes = FALSE,at = 1:number_groups+0.2, xlab=" ", ylab=" ", border = ifelse(box_color==T,point_col,"black"), add=TRUE ,boxwex = box_thickness,pars = list(medlty = 1, whisklty = c(1, 1), medcex = 0.7, outcex = 0, staplelty = "blank"))
   }
-  
+
   else{
     number_groups<-nlevels(group)
     boxplot_table<-boxplot(data~group,plot=F)
@@ -760,12 +760,12 @@ beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
       }
       text(x=(median(1:number_groups)),y=max(unlist(data)),labels=paste("anova, ",x,sep=""),pos=1)
     }
-    
+
   }
-  
+
   x_values = 1:number_groups
   scale = 0.05
-  
+
   # for plotting sample size below each group
   if(sample_size==TRUE){
     for(i in 1:number_groups){
@@ -782,30 +782,30 @@ beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
 ### x<-data.frame(c(rnorm(20,5),rnorm(30,10,1.5),rnorm(25,12,1.6),rnorm(20,20,3)),c(rep("A",20),rep("B",30),rep("C",25),rep("D",20)))
 ### mod(x[,1],x[,2])
 mod<-function(response,group,lab=levels(group),...){
-  
+
   # make sure group is a factor; if not, convert it to one
   if(is.factor(group)!=TRUE){
     warning("'group' is not a factor: converting now")
     group<-factor(group)
   }
-  
+
   number_groups<-nlevels(group)
-  
+
   # get statistics you need to plot
   boxplot_table<-boxplot(response~group,plot=F)
-  
+
   # create the plot
   plot(c(0,1),c(min(response),max(response)),type="n",xaxt="n",yaxt="n",...)
   # create y axis with the numbers the correct direction
   axis(2,las=2)
   x_values<-seq(0.7,0.3,length.out=number_groups)
-  
+
   # plot the median
   points(x=x_values, y=boxplot_table$stats[3,1:number_groups],cex=1.1,pch=16,col="red")
-  
+
   # creare x axis
   axis(side=1,at=x_values,labels=lab)
-  
+
   # draw lines representing 1 and fourth quartiles
   for(i in 1:number_groups){
     lines(x=rep(x_values[i],2),y=c(boxplot_table$stats[1,i],boxplot_table$stats[2,i]),lwd=2)
@@ -840,23 +840,23 @@ monte_unpaired<-function(group_a,group_b,n=9999,null=0,table=TRUE){
   values<-vector(length=n)
   crit = mean(group_a)-mean(group_b)
   diff<-abs(crit-null)
-  
+
   # make a data frame
   dat<-data.frame(c(group_a,group_b),c(rep("group_a",length(group_a)),rep("group_b",length(group_b))))
   names(dat)<-c("values","group")
-  
+
   for(i in 1:n){
     dat$group<-sample(dat$group,replace=F)
     x<-tapply(dat$value,dat$group,mean)
     values[i]<-x[[1]]-x[[2]]
   }
-  
+
   lower_bound <- quantile(values,0.025)[[1]]
   upper_bound <- quantile(values,0.975)[[1]]
-  
+
   p <- ((length(values[values<=null-diff])+length(values[values>=null+diff]))+1)/(n+1)
   # why add the +1's? see Ruxton and Neuha¨user, methods in ecology and evolution, 2013, doi:10.1111/2041-210X.12102
-  
+
   # plot
   par(lwd = 3,family = 'Helvetica',cex.lab=1.3,cex.lab=1.3)
   (plot<-hist(values,cex.lab=1.3,xlab="Simulated Differences",main="Monte Carlo Simulation",col="#99999940",breaks=20))
@@ -864,7 +864,7 @@ monte_unpaired<-function(group_a,group_b,n=9999,null=0,table=TRUE){
   segments(crit,0,crit,n,lty=2)
   segments(lower_bound,0,lower_bound,n,lty=3,lwd=2)
   segments(upper_bound,0,upper_bound,n,lty=3,lwd=2)
-  
+
   if(table==TRUE){
     g<-c(round(lower_bound,2),round(upper_bound,2),round(p,3))
     h<-c("lower_bound","upper_bound","p-value")
@@ -880,7 +880,7 @@ monte_unpaired<-function(group_a,group_b,n=9999,null=0,table=TRUE){
   }
   else{
     print(paste("based on",n,"iterations"))
-    return(p) 
+    return(p)
   }
 }
 
@@ -896,15 +896,15 @@ monte_paired<-function(data,n=9999,table=TRUE,diff_col=3,one_sided=F){
   if(!is.data.frame(data)){
     stop("please enter a data frame as the first argument")
   }
-  
+
   if(one_sided==T){
     crit <- (mean(data[,diff_col]))
   }
   else{
     crit <- abs(mean(data[,diff_col]))
   }
-  
-  
+
+
   for(i in 1:n){
     data1<-data.frame(t(apply(df[,1:2],1,sample)))
     data1$diff<-data1[,1]-data1[,2]
@@ -915,17 +915,17 @@ monte_paired<-function(data,n=9999,table=TRUE,diff_col=3,one_sided=F){
       x[i]<-abs(mean(data1$diff))
     }
   }
-  
-  
+
+
   extreme <- length(x[x>=crit])+1
   p <- extreme/(n+1)
   # why add the +1's? see Ruxton and Neuha¨user, methods in ecology and evolution, 2013, doi:10.1111/2041-210X.12102
   par(lwd = 3,family = 'Helvetica',cex.lab=1.3,cex.lab=1.3)
-  
+
   (plot<-hist(x,cex.lab=1.3,xlab="Simulated Differences",main="MC Simulation",col="#99999940"))
   text(mean(x),max(plot$counts),paste("observed = ",round(crit,1)),pos=4)
   segments(crit,0,crit,n,lty=2)
-  
+
   if(table==TRUE){
     g<-c(crit,round(extreme,0),p)
     h<-c("observed diff","num_extreme","p-value")
@@ -935,7 +935,7 @@ monte_paired<-function(data,n=9999,table=TRUE,diff_col=3,one_sided=F){
     #return(x)
   }
   else{
-    return(x) 
+    return(x)
   }
 }
 
@@ -963,27 +963,26 @@ cohens_d <- function(x,y){
 #' add transparency to a color
 #'
 #' from http://www.magesblog.com/2013/04/how-to-change-alpha-value-of-colours-in.html
-#' 
+#'
 #' @param col the color, or vector of colors, you want to add transparency to
 #' @param alpha the amount of transparency. ranges from 0 to 1 inclusive, where 0 is completely transparent and 1 is completely opaque
-#' 
+#'
 #' @return color value with transparency added
-#' 
-#' @examples 
+#'
+#' @examples
 #' "red" %>% addAlpha(0.5)
 #' viridis(5) %>% addAlpha(0.7)
 #' compare:
 #' x <- list(rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5),rnorm(50,5))
 #' simple(x, point_col = plasma(10))
 #' simple(x, point_col = plasma(10) %>% addAlpha(0.5))
-#' 
+#'
 #' @export
 
 addAlpha <- function(col, alpha=1){
   if(missing(col))
     stop("Please provide a vector of colours.")
-  apply(sapply(col, col2rgb)/255, 2, 
-        function(x) 
-          rgb(x[1], x[2], x[3], alpha=alpha))  
+  apply(sapply(col, col2rgb)/255, 2,
+        function(x)
+          rgb(x[1], x[2], x[3], alpha=alpha))
 }
-
