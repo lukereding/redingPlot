@@ -50,3 +50,8 @@ To find the code to generate these plots and other examples, check the help file
 * use color thoughtfully. Or just use [viridis](https://bids.github.io/colormap/). Why? (a) It's perceptually uniform. (b) It looks good. (c) It works just as well printed in black and white. (d) It's accessible to people with the most common forms of colorblindness. (e) It works for representing categories or for representing a quantitative variable. (f) You'll never need to justify your color scheme ever again. Note that this is also true of the other colormaps provided in the viridis package (plasma, magma, and inferno), but they don't look as nice.
 
 Some of these things are not implemented (yet) in the graphics in the package.
+
+
+--------------
+
+Your graphics should not stop here. Good graphics should tell the whole story without requiring the reader to dive into the figure caption. We put axis labels on our graphs so that our readers don't have to sift through text to make connections and extract meaning. Most graphics are easily improved by reminding the reader what they're looking at. The graphs produced by these plotting functions should provide a template for further tweaking either within R (for greater reproducibility when your advisor or a reviewer demands a change) or within a graphics editor like Inkscape.
