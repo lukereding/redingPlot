@@ -49,7 +49,8 @@ cols<-c(ruby,mint,golden,slate,orange,sky)
 #' @param sample_size defaults to true
 #' @param IQR include line for IQR? defaults to false
 #'
-#' @examples x <- list(rnorm(40,40,5),rnorm(20,35,2),rnorm(25,41,2))
+#' @examples 
+#' x <- list(rnorm(40,40,5),rnorm(20,35,2),rnorm(25,41,2))
 #' simple(x,main="simple() defaults") # using the defaults
 #' simple(x,jitter=F) # without jitter doesn't look as good
 #' simple(x,line_col="black",point_col=c(ruby,mint,slate),ylab="measurement",xlab="group",lab=c("A","B","C"),rug=T)
