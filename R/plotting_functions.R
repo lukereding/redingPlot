@@ -53,73 +53,72 @@ cols<-c(ruby,mint,golden,slate,orange,sky)
 #' simple(x,main="simple() defaults") # using the defaults
 #' simple(x,jitter=F) # without jitter doesn't look as good
 #' simple(x,line_col="black",point_col=c(ruby,mint,slate),ylab="measurement",xlab="group",lab=c("A","B","C"),rug=T)
-#'  simple(list(rnorm(50,50,5),rnorm(30,40,6),rnorm(10,60,2),rnorm(60,50,10),rnorm(30,39,4)),point_col=wes_palette(5, name = "Zissou"),line_color="black",median=T,main="simple() dressed up")
+#' x<-list(rnorm(50,50,5),rnorm(30,40,6),rnorm(10,60,2),rnorm(60,50,10),rnorm(30,39,4))
+#'  simple(x,point_col=viridis(5),line_color="black",median=T,main="simple() dressed up")
 #'  simple(list(rnorm(24,10,2),rchisq(20,5),rexp(40,1/5),runif(40,5,15)),lab=c("normal","chi-squared","exponetial","uniform"),point_col=c(ruby,mint,slate,"goldenrod"),line_color="black",median=T)
 #'  simple(list(iris %>% filter(Species=="setosa") %>% .$Sepal.Length, iris %>% filter(Species=="versicolor") %>% .$Sepal.Length, iris %>% filter(Species=="virginica") %>% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="simple()",xlab="species")
+#'  simple(iris$Sepal.Length,iris$Species) # the simpler way
 #'
 #' @export
 
-simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_width=3.0,jitter=T,point_col=viridis(length(data)+2)[1:length(data)],y_limits=c(min(unlist(data),na.rm=T),max(unlist(data),na.rm=T)),median=FALSE,rug=TRUE,sample_size=T,IQR=F,...){
-  # can't figure out how to make inputting the data more flexible (e.g. with a formula)
-  # data_name <- deparse(substitute(data))
-#
-#   # consider response~some_factor:
-#   if(grep("~",data_name) %>% length == 1){
-#     grouping <- strsplit(data_name,"~")[[3]][1]
-#     data <- strsplit(data_name,"~")[[2]][1]
-#
-#     grouping <- get(grouping,env=globalenv())
-#
-#     # convert to a list
-#     x<-list()
-#     for(i in 1:length(grouping)){
-#       list[[i]] <- data$grouping[i]
-#     }
-#     data <- x
-#   }
-#
-#   # consider dataframe, factor
-#   else if(is.na(grouping)==FALSE){
-#     x<-list()
-#     for(i in 1:length(grouping)){
-#       x[[i]] <- data$grouping[i]
-#     }
-#     data <- x
-#   }
-
-  # consdier a list
-  if(is.list(data)==FALSE){
-    stop("however you input the data, try some other way")
+simple<-function(data,grouping,lab=NA,point_size=1.2,line_color="red",line_width=3.0,jitter=T,point_col=NA,median=FALSE,rug=TRUE,sample_size=T,...){
+  
+  # if response is missing, assume data is a list
+  if(missing(grouping)){
+    if(is.list(data)==FALSE){
+      stop("enter your data either as a list or as a response variable and factor within a dataframe")
+    }
   }
-  number_groups<-length(data)
+  
+  if(is.list(data)){
+    print("list")
+    # if its a list, turn it into a dataframe
+    # this is a stupid way to make this data frame, but whatever:
+    if(missing(lab)){
+      lab <- letters[1:length(data)]
+    }
+    
+    labels <- c()
+    sizes <- sapply(data,length)
+    for(i in 1:length(data)){
+      labels <- c(labels,rep(lab[i], sizes[i]))
+    }
+    df <- data.frame(matrix(unlist(data), nrow=length(unlist(data)), byrow=T),labels)
+    data <- df[,1]
+    grouping <- df[,2] %>% factor
+  }
+  else{
+    print("not a list")
+    df <- data.frame(data,grouping)
+    print(df)
+    if(missing(lab)){
+      lab <- levels(grouping)
+    }
+  }
+  
+  #######################
+  
+  number_groups<-nlevels(grouping)
+  
+  if(missing(point_col)){
+    point_col=viridis(number_groups+2)[1:number_groups]
+  }
+  
   # to get nice x values for plotting, we'll use those generate by barplot()
-  x_values<-barplot(rep(1,number_groups),plot=F)
+  x_values<-barplot(rep(1,number_groups),plot=F) %>% as.vector
 
   # create the plot
-  plot(c(x_values[1]*0.4,x_values[length(x_values)]*1.2),y_limits,type="n",xaxt="n",yaxt="n",bty="l",...)
+  plot(c(x_values[1]*0.4,x_values[length(x_values)]*1.2), xlim=c(x_values[1]*0.4,x_values[length(x_values)]*1.2),ylim=c(min(data,na.rm=T)*0.95, max(data,na.rm=T)*1.05),type="n",xaxt="n",yaxt="n",bty="l",...)
 
   # create y axis with the numbers the correct direction
   axis(2,las=2)
 
   # find range of x:
-  if(length(data)==1){
-    xRange <- 0.5
-  }
-  else{
-    xRange <- range(x_values,na.rm=T)[2]-range(x_values,na.rm=T)[1]
-  }
+  ifelse(length(data)==1,xRange <- 0.5,xRange <- range(x_values,na.rm=T)[2]-range(x_values,na.rm=T)[1])
 
   # plot the mean as a line
-  for(i in 1:length(data)){
-    lines(x=c(x_values[i]-0.2,x_values[i]+0.2),y=c(rep(mean(data[[i]],na.rm=T),2)),col=line_color,lwd=line_width)
-  }
-
-  # to plot the IQR:
-  if(IQR==TRUE){
-    p<-boxplot(data,plot=F)
-    for(i in 1:length(data)){
-      lines(x=c(x_values[i],x_values[i]),y=c(p$stats[2,i],p$stats[4,i]),lwd=2,col=addAlpha(line_color))
-    }
+  for(i in 1:number_groups){
+    lines(x=c(x_values[i]-0.2,x_values[i]+0.2),y=c(rep(mean(df[df[,2] %in% lab[i],1]),2)),col=line_color,lwd=line_width)
   }
 
   # create x axis
@@ -133,31 +132,33 @@ simple<-function(data,grouping=NULL,lab=NA,point_size=1.2,line_color="red",line_
   # draw data points
   if(jitter==T){
     for(i in 1:number_groups){
-      points(x=rep(x_values[i],length(data[[i]])) %>% jitter(amount = 0.05),y=data[[i]],pch=16,col=point_col[i],cex=point_size)
+      points(x=rep(x_values[i], nrow(df[df[,2] %in% lab[i],])) %>% jitter(amount = 0.05), y=df[df[,2] %in% lab[i],1], pch=16, col=point_col[i], cex=point_size)
     }
   }
   else{
     for(i in 1:number_groups){
-      points(x=rep(x_values[i],length(data[[i]])),y=data[[i]],pch=16,col=point_col[i],cex=point_size)
+      points(x=rep(x_values[i],length(df[df[,2] %in% lab[i],1])), y=df[df[,2] %in% lab[i],1], pch=16,col=point_col[i],cex=point_size)
     }
   }
 
   # for rug plotting:
   if(rug==T){
-    for(i in 1:length(data)){
-      rug(data[[i]],side=4,col=addAlpha(point_col[i],0.4),lwd=4)
+    for(i in 1:number_groups){
+      rug(df[df[,2] %in% lab[i],1],side=4,col=addAlpha(point_col[i],0.4),lwd=4)
     }
   }
 
   # for plotting the median as a diamond:
   if(median==T){
-    points(x=x_values,y=unlist(lapply(data,median)),pch=5,col=line_color,cex=1.5,lwd=3)
+    for(i in 1:number_groups){
+      points(x=x_values[i],y=median(df[df[,2] %in% lab[i],1]), pch=5, col=line_color, cex=1.5, lwd=3)
+    }
   }
 
   # for plotting sample size below each group
   if(sample_size==TRUE){
-    for(i in 1:length(data)){
-      text(x_values[i],par("usr")[3]*1.03,paste("n = ",length(data[[i]]),sep=""),col="grey20",pos=3)
+    for(i in 1:number_groups){
+      text(x_values[i],par("usr")[3]*1.03,paste("n = ", length(df[df[,2] %in% lab[i],1]),sep=""),col="grey20",pos=3)
     }
   }
 }
