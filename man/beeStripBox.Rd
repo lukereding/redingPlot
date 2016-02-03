@@ -24,7 +24,11 @@ beeStripBox(data, group, lab = rep(c(), length(data)), point_size = 1.4,
 
 \item{beeMethod}{see beeswarm. defaults to "center"}
 
+\item{line_width}{width of the line}
+
 \item{point_col}{color of the each group. defaults to viridis colors}
+
+\item{y_limits}{limits of the y axis}
 
 \item{mean}{does nothing right now}
 

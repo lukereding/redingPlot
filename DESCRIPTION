@@ -7,10 +7,18 @@ Description: Provides functions for plotting in R with an emphasis on plotting
     relationships between categorical and quantitative variables while actually
     showing the data.
 Depends:
-    R (>= 3.2.2), beeswarm, magrittr, viridis, dplyr
+    R (>= 3.2.2),
+    beeswarm,
+    magrittr,
+    viridis,
+    dplyr
 Imports:
-	dplyr, beeswarm, wesanderson, magrittr, viridis
+    dplyr,
+    beeswarm,
+    wesanderson,
+    magrittr,
+    viridis
 License: MIT
 LazyData: true
-RoxygenNote: 5.0.0.9000
+RoxygenNote: 5.0.1
 Encoding: UTF-8

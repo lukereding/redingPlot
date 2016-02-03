@@ -14,7 +14,7 @@ bar(sim, lab = rep(c(), length(sim)), CI = F, SE = F,
 
 \item{lab}{labels for each group}
 
-\item{CI}{logical. should a 95% confidence interval be drawn for each group? defaults to F}
+\item{CI}{logical. should a 95 percent confidence interval be drawn for each group? defaults to F}
 
 \item{SE}{logical. should the dtandard errors for each group be drawn? deafults to F}
 
@@ -23,6 +23,8 @@ bar(sim, lab = rep(c(), length(sim)), CI = F, SE = F,
 \item{jitter}{logical. show the data jittered? defaults to TRUE}
 
 \item{point_col}{color of the jittered data points}
+
+\item{y_limits}{limits of the y axis}
 
 \item{median}{logical. draw median for each group}
 

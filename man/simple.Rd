@@ -4,11 +4,9 @@
 \alias{simple}
 \title{line for mean + data}
 \usage{
-simple(data, grouping = NULL, lab = NA, point_size = 1.2,
-  line_color = "red", line_width = 3, jitter = T,
-  point_col = viridis(length(data) + 2)[1:length(data)],
-  y_limits = c(min(unlist(data), na.rm = T), max(unlist(data), na.rm = T)),
-  median = FALSE, rug = TRUE, sample_size = T, IQR = F, ...)
+simple(data, grouping, lab = NA, point_size = 1.2, line_color = "red",
+  line_width = 3, jitter = T, point_col = NA, median = FALSE,
+  rug = TRUE, sample_size = T, ...)
 }
 \arguments{
 \item{data}{input your data as a list where length(list) = number of groups}
@@ -18,6 +16,8 @@ simple(data, grouping = NULL, lab = NA, point_size = 1.2,
 \item{point_size}{size of points}
 
 \item{line_color}{color of line for mean}
+
+\item{line_width}{width of line}
 
 \item{jitter}{defaults to T}
 
@@ -29,14 +29,25 @@ simple(data, grouping = NULL, lab = NA, point_size = 1.2,
 
 \item{sample_size}{defaults to true}
 
-\item{IQR}{include line for IQR? defaults to false}
-
 \item{ylim}{y limits}
+
+\item{IQR}{include line for IQR? defaults to false}
+}
+\value{
+none
 }
 \description{
 plots each vector in your list as a group with the data jittered; draws a line for the mean
 }
 \examples{
-x <- list(rnorm(40,40,5),rnorm(20,35,2),rnorm(25,41,2))
+x <- list(rnorm(40,40,5),rnorm(20,35,2),rnorm(25,41,2)) ; simple(x,main="simple() defaults") # using the defaults
+simple(x,jitter=F) # without jitter doesn't look as good
+simple(x,line_col="black",point_col=c(ruby,mint,slate),ylab="measurement",xlab="group",lab=c("A","B","C"),rug=T)
+x<-list(rnorm(50,50,5),rnorm(30,40,6),rnorm(10,60,2),rnorm(60,50,10),rnorm(30,39,4))
+simple(x,point_col=viridis(5),line_color="black",median=T,main="simple() dressed up")
+simple(list(rnorm(24,10,2),rchisq(20,5),rexp(40,1/5),runif(40,5,15)),lab=c("normal","chi-squared","exponetial","uniform"),point_col=c(ruby,mint,slate,"goldenrod"),line_color="black",median=T)
+simple(list(iris \%>\% filter(Species=="setosa") \%>\% .$Sepal.Length, iris \%>\% filter(Species=="versicolor") \%>\% .$Sepal.Length, iris \%>\% filter(Species=="virginica") \%>\% .$Sepal.Length),lab=c("setosa","versicolor","virginica"),ylab="sepal length",main="simple()",xlab="species")
+simple(iris$Sepal.Length,iris$Species) # the simpler way
+
 }
 
