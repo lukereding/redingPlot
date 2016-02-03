@@ -40,7 +40,7 @@ cols<-c(ruby,mint,golden,slate,orange,sky)
 #' @param lab labels for groups
 #' @param point_size size of points
 #' @param line_color color of line for mean
-#' @param line_width
+#' @param line_width width of line
 #' @param jitter defaults to T
 #' @param point_col defeaults to viridis colors
 #' @param ylim y limits
@@ -399,7 +399,7 @@ credible_intervals<-function(x,n=100000){
 #' @param bar_color color of the bars. can be a vector where length(bar_color) = number of groups
 #' @param jitter logical. show the data jittered? defaults to TRUE
 #' @param point_col color of the jittered data points
-#' @param y_limits
+#' @param y_limits limits of the y axis
 #' @param median logical. draw median for each group
 #' @param point_size size of data points. defaults to 1.0. increase to make the data points bigger.
 #' @param sample_size logical. plot sample size under each bar?
@@ -629,7 +629,7 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
 #' @param lab labels for the groups
 #' @param line_width width of the lines for the modified boxplots
 #' @param point_col color of the data points for each group. defaults to viridis colors
-#' @param y_limits
+#' @param y_limits limits of the y axis
 #' @param sample_size logical. If TRUE, print the sample size under each group
 #' @param stats logical. print overall p value from anova?
 #' @param red_median logical. Should the median be red? If FALSE, defaults to the color of the group.
@@ -723,9 +723,9 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
 #' @param lab labels for groups
 #' @param point_size size of plotting characters. defaults to 1.4
 #' @param beeMethod see beeswarm. defaults to "center"
-#' @param line_width
+#' @param line_width width of the line
 #' @param point_col color of the each group. defaults to viridis colors
-#' @param y_limits
+#' @param y_limits limits of the y axis
 #' @param mean does nothing right now
 #' @param sample_size logical. plot sample size under each group?
 #' @param side defaults to -1. determines whether the histogram are stacked to the right or the left
