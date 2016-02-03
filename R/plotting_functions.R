@@ -393,7 +393,7 @@ credible_intervals<-function(x,n=100000){
 #'
 #' @param sim list of vectors you want to plot
 #' @param lab labels for each group
-#' @param CI logical. should a 95% confidence interval be drawn for each group? defaults to F
+#' @param CI logical. should a 95 percent confidence interval be drawn for each group? defaults to F
 #' @param SE logical. should the dtandard errors for each group be drawn? deafults to F
 #' @param bar_color color of the bars. can be a vector where length(bar_color) = number of groups
 #' @param jitter logical. show the data jittered? defaults to TRUE
@@ -618,7 +618,32 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
 #data(iris)
 # beeStripMod(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepal length",main="beeStripMod() example")
 
-beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMethod="center",line_width=3.0,jitter=T,point_col=ifelse(is.list(data) %>% rep(20),viridis(length(data)+1)[1:length(data)],viridis(nlevels(group)+1)[1:nlevels(group)]),y_limits=c(ifelse(is.list(data),min(unlist(data)),min(data)),ifelse(is.list(data),max(unlist(data),max(data)))),mean=FALSE,sample_size=T,side=-1,red_median=F,stats=T,...){
+
+#' plot qualitative x quantitative as Tufte's boxplot + histogram of data in each group
+#'
+#' plots a modified boxplot from Tufte for each group alongside the data as arranged as a histogram
+#'
+#' @param data either a column in a dataframe containing the raw data you wish to plot, or a list, where len(your_list) == number of groups you're plotting
+#' @param group if `data` is a column in a dataframe, `group` is a column in the same dataframe giving the group that each observation in `data` belongs to. If `data` is a list, don't worry about this argument.
+#' @param lab labels for the groups
+#' @param line_width width of the lines for the modified boxplots
+#' @param point_col color of the data points for each group. defaults to viridis colors
+#' @param y_limits
+#' @param sample_size logical. If TRUE, print the sample size under each group
+#' @param stats logical. print overall p value from anova?
+#' @param red_median logical. Should the median be red? If FALSE, defaults to the color of the group.
+#' @param ... other arguments to par()
+#'
+#' @return None
+#'
+#' @examples
+#' data(iris)
+#' beeStripMod(iris$Sepal.Length,iris$Species,xlab="species",ylab="sepal length",main="beeStripMod() example")
+#'
+#'
+#' @export
+
+beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMethod="center",line_width=3.0,point_col=ifelse(is.list(data) %>% rep(20),viridis(length(data)+1)[1:length(data)],viridis(nlevels(group)+1)[1:nlevels(group)]),y_limits=c(ifelse(is.list(data),min(unlist(data)),min(data)),ifelse(is.list(data),max(unlist(data),max(data)))),sample_size=T,side=-1,red_median=T,stats=T,...){
 
   # if response is missing, assume data is a list
   if(missing(group)){
@@ -633,7 +658,7 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     # get statistics you need to plot
     boxplot_table<-boxplot(data,plot=F)
     # create the plot
-    beeswarm(data,method=beeMethod,priority="density",pch=16,col=point_col,cex=point_size,side = side,bty='l',yaxt="n",labels=lab,...)
+    beeswarm(data,method=beeMethod,priority="density",pch=16,col=point_col,cex=point_size,side = side,bty='l',yaxt="n",cex.axis=1.2,cex.lab=1.3,labels=lab,...)
     # create y axis with the numbers the correct direction
     axis(2,las=2)
   }
@@ -642,10 +667,12 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     number_groups<-nlevels(group)
     boxplot_table<-boxplot(data~group,plot=F)
     # create the plot
-    beeswarm(data~group,method=beeMethod,priority="density",pch=16,col=point_col,cex=point_size,side = side,bty='l',yaxt="n",labels=lab,...)
+    beeswarm(data~group,method=beeMethod,priority="density",pch=16,col=point_col,cex=point_size,side = side,bty='l',yaxt="n",cex.axis=1.2,cex.lab=1.3,labels=lab,...)
     # create y axis with the numbers the correct direction
     axis(2,las=2)
 
+  }
+  
     if(stats==T){
       print(TukeyHSD(aov(data~group)))
       x = summary(aov(data~group))[[1]][["Pr(>F)"]][1] %>% round(4)
@@ -657,8 +684,6 @@ beeStripMod<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
       }
       text(x=(median(1:number_groups)),y=max(data),labels=paste("anova, ",x,sep=""),pos=1)
     }
-
-  }
 
   x_values = 1:number_groups
   point_col = point_col[1:number_groups]
@@ -733,7 +758,7 @@ beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     # get statistics you need to plot
     boxplot_table<-boxplot(data,plot=F)
     # create the plot
-    beeswarm(data,method=beeMethod,priority="density",pch=16,col=point_col,ylim=y_limits,cex=point_size,cex.lab=1.2,side = side,bty='l',yaxt="n",labels=lab,...)
+    beeswarm(data,method=beeMethod,priority="density",pch=16,col=point_col,ylim=y_limits,cex=point_size,cex.lab=1.2,side = side,bty='l',yaxt="n",cex.lab=1.3,,cex.axis=1.2,labels=lab,...)
     # create y axis with the numbers the correct direction
     axis(2,las=2)
     boxplot(data, main = "", axes = FALSE,at = 1:number_groups+0.2, xlab=" ", ylab=" ", border = ifelse(box_color==T,point_col,"black"), add=TRUE ,boxwex = box_thickness,pars = list(medlty = 1, whisklty = c(1, 1), medcex = 0.7, outcex = 0, staplelty = "blank"))
@@ -744,7 +769,7 @@ beeStripBox<-function(data,group,lab=rep(c(),length(data)),point_size=1.4,beeMet
     boxplot_table<-boxplot(data~group,plot=F)
     point_col = point_col[1:number_groups]
     # create the plot
-    beeswarm(data~group,method=beeMethod,priority="density",pch=16,yaxt="n",col=point_col,cex=point_size,side = side,bty='l',labels=lab,...)
+    beeswarm(data~group,method=beeMethod,priority="density",pch=16,yaxt="n",col=point_col,cex=point_size,side = side,bty='l',cex.axis=1.2,cex.lab=1.3,labels=lab,...)
     # create y axis with the numbers the correct direction
     axis(2,las=2)
     boxplot(data~group, add=TRUE, main = "",border = ifelse(box_color==T,point_col,"black"), at = 1:number_groups+0.2, axes = FALSE, xlab=" ", ylab=" ", boxwex = box_thickness, pars = list(medlty = 1, whisklty = c(1, 1), medcex = 0.7, outcex = 0, staplelty = "blank"))
