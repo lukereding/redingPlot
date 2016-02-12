@@ -16,7 +16,7 @@ cats_meow(y, x = NA, lab = NA, SEM = FALSE, CI = TRUE,
 
 \item{SEM}{draw s.e.m.'s as fences? defaults to FALSE}
 
-\item{CI}{draw 95% CIs as fences? defaults to TRUE}
+\item{CI}{draw 95 percent CIs as fences? defaults to TRUE}
 
 \item{box_thickness}{thickness of the boxes of your boxplots}
 

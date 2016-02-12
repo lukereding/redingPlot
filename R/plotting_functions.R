@@ -867,7 +867,7 @@ histogram=function(x,color="grey50",bor="grey50",rug = TRUE,...){
 #' @param x NA if y is a list. Otherwise a column in a dataframe containing the group labels for each observation in y
 #' @param lab labels for groups
 #' @param SEM draw s.e.m.'s as fences? defaults to FALSE
-#' @param CI draw 95% CIs as fences? defaults to TRUE
+#' @param CI draw 95 percent CIs as fences? defaults to TRUE
 #' @param box_thickness thickness of the boxes of your boxplots
 #' @param plot_data logical. plot the data jittered alongside the boxplot? Defaults to TRUE
 #' @param colors colors of the data points. defaults to viridis colors
