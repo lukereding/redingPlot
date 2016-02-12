@@ -853,6 +853,109 @@ histogram=function(x,color="grey50",bor="grey50",rug = TRUE,...){
 }
 
 
+
+
+
+
+# boxplot with point for s.e.m. / ci + data jittered
+
+#' plot quantitative x categorical data various ways
+#'
+#' boxplot + mean with fences for CIs or s.e.m.s + data jittered
+#'
+#' @param y either a list of the data you wish to plot, where length(data) == # of groups, or a column of a dataframe containing y axis values
+#' @param x NA if y is a list. Otherwise a column in a dataframe containing the group labels for each observation in y
+#' @param lab labels for groups
+#' @param SEM draw s.e.m.'s as fences? defaults to FALSE
+#' @param CI draw 95% CIs as fences? defaults to TRUE
+#' @param box_thickness thickness of the boxes of your boxplots
+#' @param plot_data logical. plot the data jittered alongside the boxplot? Defaults to TRUE
+#' @param colors colors of the data points. defaults to viridis colors
+#' @param ... other arguments to pass to par()
+#'
+#'
+#' @return none
+#'
+#' @examples
+#' data(iris); cats_meow(iris$Sepal.Length,iris$Species, ylab="sepal length", xlab = "species")
+#'
+#' @export
+
+cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, plot_data=T, colors = magma(5)[1:4], ...){
+  
+  # if the data are entered as a list, coerse to a dataframe
+  if(missing(x)){
+    
+    if(is.list(y)){
+      # if its a list, turn it into a dataframe
+      # this is a stupid way to make this data frame, but whatever:
+      if(missing(lab)){
+        lab <- letters[1:length(y)]
+      }
+      
+      labels <- c()
+      sizes <- sapply(y,length)
+      for(i in 1:length(y)){
+        labels <- c(labels,rep(lab[i], sizes[i]))
+      }
+      df <- data.frame(matrix(unlist(y), nrow=length(unlist(y)), byrow=T),labels)
+      names(df)<-c("dat","groups")
+      y <- df$dat
+      x <- df$groups
+    }
+    
+  }
+  
+  
+  # plot boxes
+  (stats<-boxplot(y~x, boxwex = box_thickness, cex.alb=1.2,pars = list(medlty = 2, medlwd=1, boxlty=2, whisklty = c(2, 2), medcex = 1, outcex = 0, staplelty = "blank"), ...))
+  
+  # run t-test to get CIs and means later
+  tests <- by(y,x,t.test)
+  
+  CIs_lower <- c()
+  CIs_upper <- c()
+  means <- c()
+  
+  # get CIs and means
+  for(i in 1:length(tests)){
+    means <- c(means, tests[[i]]$estimate)
+    CIs_lower <- c(CIs_lower, tests[[i]]$conf.int[1])
+    CIs_upper <- c(CIs_upper, tests[[i]]$conf.int[2])
+  }
+  sems <- by(y,x,sd) %>% divide_by(sqrt(by(y,x,length))) %>% as.vector
+  
+  # plot sems
+  if(SEM == TRUE){
+    for(i in 1:(stats$n %>% length)){
+      lines(x=c(i,i), y=c(means[i], means[i]+sems[i]), lwd=1.4, col="black")
+      lines(x=c(i,i), y=c(means[i], means[i]-sems[i]), lwd=1.4, col="black")
+    }
+  }
+  
+  # plot CIs
+  if(CI == TRUE){
+    for(i in 1:(stats$n %>% length)){
+      lines(x=c(i,i), y=c(means[i], CIs_lower[i]), lwd=1.4, col="black")
+      lines(x=c(i,i), y=c(means[i], CIs_upper[i]), lwd=1.4, col="black")
+    }
+  }
+  
+  # plot the data
+  if(plot_data==TRUE){
+    for(i in 1:(stats$n %>% length)){
+      points(x=rep(i, stats$n[i]) %>% jitter(amount = 0.07) + 0.25, y=by(y,x,c)[[i]], pch=16, col=colors[i], cex=1.1)
+    }
+  }
+  
+  # plot the means
+  points(1:(stats$n %>% length),means,pch=16,cex=1.3,col="black")
+  
+}
+
+
+
+
 ### some non-parametric stats functions
 #############################################
 ### monte carlo, two-samples, unpaired #####
