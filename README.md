@@ -5,9 +5,14 @@ redingPlot contains some useful plotting functions. Most of the functions aren't
 ----------------
 
 ## what's here
+  * [why you should install redingPlot](https://github.com/lukereding/redingPlot#why-you-should-install-redingPlot)
   * [installing redingPlot](https://github.com/lukereding/redingPlot#how-to-install-redingplot)
   * [available functions](https://github.com/lukereding/redingPlot#available-functions)
   * [philosophy](https://github.com/lukereding/redingPlot#these-plots-are-designed-with-the-following-philosophy-in-mind)
+
+###why you should install redingPlot
+
+Because the go-to solutions for plotting quantitative x categorical data are insuffient and obfuscating. Bar plots and (to a lesser extent) boxplots present summaries of the data. By presenting a summary instead of the thing we're really interested in (the data), information is thrown away and the reader's ability to assess the conclusions you draw from your data is made impossible. Are there outliers? Are the data roughly normally distributed? How variable are the data? What is the sample size? All these are fundamental questions readers should be able to answer after reading a your graphic, and yet using standard plotting approaches usually doesn't get us close. This is why you use redingPlot.
 
 ###how to install **redingPlot**
 
