@@ -110,7 +110,7 @@ simple<-function(data,grouping,lab=NA,point_size=1.2,line_color="red",line_width
   x_values<-barplot(rep(1,number_groups),plot=F) %>% as.vector
 
   # create the plot
-  plot(c(x_values[1]*0.4,x_values[length(x_values)]*1.2), xlim=c(x_values[1]*0.4,x_values[length(x_values)]*1.2),ylim=c(min(data,na.rm=T)*0.95, max(data,na.rm=T)*1.05),type="n",xaxt="n",yaxt="n",bty="l",...)
+  plot(c(x_values[1]*0.4,x_values[length(x_values)]*1.2), xlim=c(x_values[1]*0.4,x_values[length(x_values)]*1.2),ylim=c(min(data,na.rm=T)*0.95, max(data,na.rm=T)*1.05),type="n",xaxt="n",yaxt="n",bty="l",cex.axis=1.2,cex.lab=1.3,...)
 
   # create y axis with the numbers the correct direction
   axis(2,las=2)
@@ -319,7 +319,7 @@ strip<-function(data,lab=rep(c(),length(data)),type="se",jitter=T,points=16,xlab
   x_values <- barplot(unlist(means), plot=F) %>% as.vector
 
 
-  plot(c(0,x_values[number_groups]+0.2),c(minimum_value,maximum_value),type="n",xaxt="n",yaxt="n",xlab=xlab,...)
+  plot(c(0,x_values[number_groups]+0.2),c(minimum_value,maximum_value),type="n",xaxt="n",cex.axis=1.2,cex.lab=1.3,yaxt="n",xlab=xlab,...)
   # create y axis with the numbers the correct direction
   axis(2,las=2)
 
@@ -448,7 +448,7 @@ bar<-function(sim,lab=rep(c(),length(sim)),CI=F,SE=F,bar_color="grey80",jitter=T
     (p<-barplot(means,bty="l",ylim=c(floor(min_value),ceiling(max_value)+(0.1*max_value)),axes=F,col=bar_color,border=NA,...))
   }
   else{
-    (p<-barplot(means,bty="l",ylim=y_limits,axes=F,col=bar_color,border=NA,...))
+    (p<-barplot(means,bty="l",ylim=y_limits,axes=F,col=bar_color,border=NA,cex.axis=1.2,cex.lab=1.3,...))
   }
   #(p<-barplot(means,bty="l",space=0.4,ylim=ifelse(y_limits==NA,c(floor(min_value),ceiling(max_value)+(0.1*max_value)),y_limits),axes=F,col=bar_color,border=NA,...))
   axis(1,at=p,lwd=1,cex=1.5,labels=lab,tick=F)
@@ -563,7 +563,7 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
   }
 
   # do the actual plotting
-  plot(x,y,xlab=xlab,ylab=ylab,pch=plottingCharacter,yaxt='n',bty="l",col=color,cex.lab=1.2,...)
+  plot(x,y,xlab=xlab,ylab=ylab,pch=plottingCharacter,yaxt='n',bty="l",cex.axis=1.2,cex.lab=1.3,col=color,cex.lab=1.2,...)
   axis(2, las=2)
 
   p.value<-summary(lm(y~x))$coefficients[2,4]
@@ -614,6 +614,134 @@ scatter<-function(x,y,xlab="",ylab="",line=T,stats=TRUE,color="black",line_col="
   # reset the par values
   on.exit(par(op))
 }
+
+
+
+
+# code adapted from from http://www.r-bloggers.com/example-10-3-enhanced-scatterplot-with-marginal-histograms/
+
+#' plot quantitative x quantitative data as scatter plot with marginal histograms
+#'
+#' scatter plot with nice defaults. automatically tests for a linear association between your two variables, draws regression lines, prints stats to the plot,plots marginal histograms, etc.
+#'
+#' @param x vector of data for the x axis
+#' @param y vector of data for the y axis
+#' @param title main title
+#' @param xlab x label
+#' @param ylab y label
+#' @param line logical. draw regression line? defaults to T
+#' @param stats logical. compute sample size, p-value for regression slope, and r squared value and print to the corner of the graph? defaults to TRUE
+#' @param color color of data points. defaults to "black"
+#' @param line_col color of regression line. defaults to "red"
+#' @param confidenceInterval logical. plot confidence bands about the slope?
+#' @param plottingCharacter type of plotting character. defaults to 16, i.e., solid point
+#' @param rug logical. plot a rug plot along the x and y axes? defaults to FALSE
+#' @param ... other arguments to par()
+#'
+#' @return None
+#'
+#' @examples
+#' scatter(rnorm(50,50,10),rnorm(50,30,3))
+#' scatter(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",title="scatter_hist() example")
+#'
+#'
+#' @export
+
+scatter_hist<-function(x,y,xlab="",ylab="",title = "",line=T,stats=TRUE,color="black",line_col="red",confidenceInterval=T,plottingCharacter=16,rug = F,...){
+  op <- par(no.readonly = TRUE)
+  par(lwd=1,cex=1,bg="white",xpd=FALSE)
+  zones <- matrix(c(1,1,1, 
+                    0,5,0, 
+                    2,6,4, 
+                    0,3,0), ncol = 3, byrow = TRUE)
+  layout(zones, widths=c(0.3,4,0.8), heights = c(1,2.3,8,.75))
+  
+  # error checking
+  if(length(x)!=length(y)){
+    stop("x and y lengths differ")
+  }
+  
+  # get histograms
+  xhist <- hist(x,plot=FALSE,breaks=10)
+  yhist <- hist(y, plot=FALSE, breaks=10)
+  top <- max(c(xhist$counts, yhist$counts))
+  
+  par(xaxt="n", yaxt="n",bty="n",  mar = c(.3,2,.3,0) +.05)
+  
+  # main title
+  plot(x=1,y=1,type="n",ylim=c(-1,1), xlim=c(-1,1))
+  text(0,0,paste(title), cex=2)
+  
+  # y label
+  plot(x=1,y=1,type="n",ylim=c(-1,1), xlim=c(-1,1))
+  text(0,0,paste(ylab), cex=1.5, srt=90)
+  
+  # x label
+  plot(x=1,y=1,type="n",ylim=c(-1,1), xlim=c(-1,1))
+  text(0,0,paste(xlab), cex=1.5)
+  
+  # y histogram
+  par(mar = c(2,0,1,1))
+  barplot(yhist$counts, axes = FALSE, xlim = c(0, top),space = 0, horiz = TRUE, col="grey50", border="grey50")
+  
+  # x histogram
+  par(mar = c(0,2,1,1))
+  barplot(xhist$counts, axes = FALSE, ylim = c(0, top), space = 0, col="grey50", border="grey50")
+  
+  # do the actual plotting
+  par(mar = c(2,2,.5,.5), xaxt="s", yaxt="s", bty="n")
+  plot(x,y,xlab=xlab,ylab=ylab,pch=plottingCharacter,yaxt='n',bty="l",col=color,cex.lab=1.2,...)
+  axis(2, las=2)
+  
+  p.value<-summary(lm(y~x))$coefficients[2,4]
+  c<-summary(lm(y~x))$coefficients[2,1]
+  r_squared <- summary(lm(y~x))$r.squared %>% round(3)
+  sample_size <- length(x)
+  
+  # draw the line of best fit
+  if(line==T){
+    if(p.value<=0.05){
+      line(x,y,lwd=2,color=line_col)
+    }
+    else{
+      line(x,y,lwd=2,lty=2,color=line_col)
+    }
+  }
+  
+  # adding confidence intervals around the regression line
+  if(confidenceInterval==T){
+    model<-lm(y~x)
+    xVals<-seq(min(x),max(x),.1)
+    conf<-predict(model,data.frame(x=xVals),interval="confidence",level=0.95)
+    lines(xVals,conf[,2],col="#00000050",lty=2,lwd=2)
+    lines(xVals,conf[,3],col="#00000050",lty=2,lwd=2)
+  }
+  
+  # adding 1-d 'rug plots' to the bottom and right of the plot to show distribution of each variable
+  if(rug==T){
+    rug(x,side=1,col="#00000070",lwd=2)
+    rug(y,side=2,col="#00000070",lwd=2)
+  }
+  
+  # add important stats to the plot
+  if(stats==T){
+    rp = vector('expression',3)
+    rp[1] = substitute(expression(r^2 == r_squared),list(r_squared = format(r_squared,dig=3)))[2]
+    rp[3] = substitute(expression(p == p.value), list(p.value = format(p.value, digits = 2)))[2]
+    rp[2] = substitute(expression(n == sample_size), list(sample_size = format(sample_size, digits = 2)))[2]
+    
+    if(c>0){
+      legend(x="bottomright",bty="n",legend=rp, y.intersp=1.2,cex=0.9,inset = 0.01)
+    }
+    else{
+      legend(x="bottomleft",bty="n",legend=rp,y.intersp=0.8,inset = 0.05)
+    }
+  }
+  
+  # reset the par values
+  on.exit(par(op))
+}
+
 
 ##############
 ### beeStrip + mod
@@ -881,7 +1009,7 @@ histogram=function(x,color="grey50",bor="grey50",rug = TRUE,...){
 #'
 #' @export
 
-cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, plot_data=T, colors = magma(5)[1:4], ...){
+cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, plot_data=T, colors = viridis(5)[1:4], ...){
   
   # if the data are entered as a list, coerse to a dataframe
   if(missing(x)){
@@ -908,7 +1036,7 @@ cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, 
   
   
   # plot boxes
-  (stats<-boxplot(y~x, boxwex = box_thickness, cex.alb=1.2,pars = list(medlty = 2, medlwd=1, boxlty=2, whisklty = c(2, 2), medcex = 1, outcex = 0, staplelty = "blank"), ...))
+  (stats<-boxplot(y~x, boxwex = box_thickness, bty='l', cex.axis=1.2,cex.lab=1.3,pars = list(medlty = 2, medlwd=1, boxlty=2, whisklty = c(2, 2), medcex = 1, outcex = 0, staplelty = "blank"), ...))
   
   # run t-test to get CIs and means later
   tests <- by(y,x,t.test)

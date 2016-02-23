@@ -5,7 +5,7 @@
 \title{plot quantitative x categorical data various ways}
 \usage{
 cats_meow(y, x = NA, lab = NA, SEM = FALSE, CI = TRUE,
-  box_thickness = 0.2, plot_data = T, colors = magma(5)[1:4], ...)
+  box_thickness = 0.2, plot_data = T, colors = viridis(5)[1:4], ...)
 }
 \arguments{
 \item{y}{either a list of the data you wish to plot, where length(data) == # of groups, or a column of a dataframe containing y axis values}

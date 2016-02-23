@@ -44,6 +44,8 @@ To find the code to generate these plots and other examples, check the help file
 ![strip](https://github.com/lukereding/redingPlot/raw/master/examples/strip.png) 
 * **scatter()** -- provides good defaults for a scatterplot. Also automatically performs a linear regression and prints relevant stats to the plot     
 ![scatter](https://github.com/lukereding/redingPlot/raw/master/examples/scatter.png)
+* **scatter_hist()** -- `scatter` with marginal histograms.
+![scatter_hist](https://github.com/lukereding/redingPlot/raw/master/examples/scatter_hist.png)
 
 ---------------
 ####these plots are designed with the following philosophy in mind:
