@@ -1084,6 +1084,64 @@ cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, 
 
 
 
+#' plot paired data
+#'
+#' boxplot + paired data connected with points
+#'
+#' @param y either a list of the data you wish to plot, where length(data) == # of groups, or a column of a dataframe containing y axis values
+#' @param x NA if y is a list. Otherwise a column in a dataframe containing the group labels for each observation in y
+#' @param lab labels for groups
+#' @param SEM draw s.e.m.'s as fences? defaults to FALSE
+#' @param CI draw 95 percent CIs as fences? defaults to TRUE
+#' @param box_thickness thickness of the boxes of your boxplots
+#' @param plot_data logical. plot the data jittered alongside the boxplot? Defaults to TRUE
+#' @param colors colors of the data points. defaults to viridis colors
+#' @param ... other arguments to pass to par()
+#'
+#'
+#' @return none
+#'
+#' @examples
+#' paired(rnorm(10,5), rnorm(10,7), lab = c("X", "X_paired"), ylab = "measurement", main="paired() example")
+#'
+#' @export
+
+paired <- function(x, y, lab=NA, box_thickness = 0.2, plot_points=T, colors = c("#440154FF", "#21908CFF") %>% addAlpha(0.1), line_color = "grey20", ...){
+  
+  # if the data are entered as a list, coerse to a dataframe
+  if(missing(x) | missing(y)){
+    stop("you must supply two vectors to plot")
+  }
+  
+  if(length(x) != length(y)){
+    stop("the number of observations in the two vectors are unequal. these cannot be paired data")
+  }
+  
+  
+  # plot boxes
+  (stats<-boxplot(list(x,y), boxwex = box_thickness, bty='l', names=lab, cex.axis=1.2,cex.lab=1.3, ..., pars = list(medlty = 1, medlwd=1, boxlty=1, whisklty = c(1, 1), medcex = 1, outcex = 0, staplelty = "blank")))
+  
+  # plot the data
+  if(plot_points==TRUE){
+    for(i in 1:length(x)){
+      points(rep(1.2, length(x)), x, col=colors[1], pch=16)
+      points(rep(1.8, length(x)), y, col = colors[2], pch=16)
+    }
+  }
+  
+  # plot the lines connecting paired data points
+  for(i in 1:length(x)){
+    lines(x = c(1.22,1.78), y=c(x[i], y[i]), col=line_color)
+  }
+}
+
+
+
+
+
+
+
+
 ### some non-parametric stats functions
 #############################################
 ### monte carlo, two-samples, unpaired #####
