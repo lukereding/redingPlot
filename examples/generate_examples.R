@@ -47,3 +47,8 @@ dev.off()
 png("./scatter_hist.png", height = 500*.8, width = 600*.8)
 scatter_hist(trees[,1],trees[,2],xlab="tree girth (in.)",ylab="tree height (ft.)",title="scatter_hist() example")
 dev.off()
+
+# paired
+png("./paired.png", height = 500*.8, width = 600*.8)
+paired(rnorm(10,5), rnorm(10,7), lab = c("X", "X_paired"), ylab = "measurement", main="paired() example")
+dev.off()

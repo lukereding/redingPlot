@@ -1088,14 +1088,13 @@ cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, 
 #'
 #' boxplot + paired data connected with points
 #'
-#' @param y either a list of the data you wish to plot, where length(data) == # of groups, or a column of a dataframe containing y axis values
-#' @param x NA if y is a list. Otherwise a column in a dataframe containing the group labels for each observation in y
+#' @param x first vector or data frame with at least two columns
+#' @param y second vector. length(x) must equal length(y) for the data to be paired. If y is left blank, x must be a dataframe with at least two columns. paired() assumes that the first two columns are the paired data. If x and y are both dataframes, paired() assumes the paired data are the first columns of each dataframe.
 #' @param lab labels for groups
-#' @param SEM draw s.e.m.'s as fences? defaults to FALSE
-#' @param CI draw 95 percent CIs as fences? defaults to TRUE
 #' @param box_thickness thickness of the boxes of your boxplots
-#' @param plot_data logical. plot the data jittered alongside the boxplot? Defaults to TRUE
+#' @param plot_data logical. plot the data be plotted as points at the tips of each line
 #' @param colors colors of the data points. defaults to viridis colors
+#' @param line_color color of the lines to connect paired observations
 #' @param ... other arguments to pass to par()
 #'
 #'
@@ -1106,12 +1105,30 @@ cats_meow <- function(y, x=NA, lab=NA, SEM=FALSE, CI=TRUE, box_thickness = 0.2, 
 #'
 #' @export
 
-paired <- function(x, y, lab=NA, box_thickness = 0.2, plot_points=T, colors = c("#440154FF", "#21908CFF") %>% addAlpha(0.1), line_color = "grey20", ...){
+paired <- function(x, y, lab=NA, box_thickness = 0.2, plot_points=T, colors = c("#440154FF", "#21908CFF"), line_color = "#00000050", ...){
   
   # if the data are entered as a list, coerse to a dataframe
-  if(missing(x) | missing(y)){
-    stop("you must supply two vectors to plot")
+  if(missing(y)){
+    if(ncol(x) >=2){
+      y <- x[,2]
+      x <- x[,1]
+      warning("assuming your paired data are the first two columns of your dataframe")
+    }
+    else{
+      stop("supply a second vector")
+    }
   }
+  
+  if(is.data.frame(x)){
+    x <- x[,1]
+    warning("assuming your x data are in the first column of x")
+  }
+  
+  if(is.data.frame(y)){
+    y <- y[,1]
+    warning("assuming your y data are in the first column of y")
+  }
+  
   
   if(length(x) != length(y)){
     stop("the number of observations in the two vectors are unequal. these cannot be paired data")
