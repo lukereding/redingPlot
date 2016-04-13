@@ -4,11 +4,15 @@ if (!"wesanderson" %in% installed.packages()) install.packages("wesanderson")
 if (!"magrittr" %in% installed.packages()) install.packages("magrittr")
 if (!"beeswarm" %in% installed.packages()) install.packages("beeswarm")
 if (!"viridis" %in% installed.packages()) install.packages("viridis")
+if (!"car" %in% installed.packages()) install.packages("car")
+if (!"data.table" %in% installed.packages()) install.packages("data.table")
 library(beeswarm)
 library(dplyr)
 library(wesanderson)
 library(magrittr)
 library(viridis)
+library(car)
+library(data.table)
 
 # some attractive colors:
 ruby <-rgb(202/255,53/255,7/255,1)
@@ -1136,7 +1140,11 @@ paired <- function(x, y, lab=NA, box_thickness = 0.2, plot_points=T, colors = c(
   
   
   # plot boxes
-  (stats<-boxplot(list(x,y), boxwex = box_thickness, bty='l', names=lab, cex.axis=1.2,cex.lab=1.3, ..., pars = list(medlty = 1, medlwd=1, boxlty=1, whisklty = c(1, 1), medcex = 1, outcex = 0, staplelty = "blank")))
+  (stats<-boxplot(list(x,y), boxwex = box_thickness, bty='l', names=lab, cex.axis=1.2,cex.lab=1.3, ..., frame=F,xaxt="n", pars = list(medlty = 1, medlwd=1, boxlty=1, whisklty = c(1, 1), medcex = 1, outcex = 0, staplelty = "blank")))
+  
+  for(i in 1:2){
+    mtext(lab[i],side=1, at=i, cex=1.2)
+  }
   
   # plot the data
   if(plot_points==TRUE){
@@ -1151,6 +1159,208 @@ paired <- function(x, y, lab=NA, box_thickness = 0.2, plot_points=T, colors = c(
     lines(x = c(1.22,1.78), y=c(x[i], y[i]), col=line_color)
   }
 }
+
+
+
+
+
+
+#' boxplot + half of a violin plot
+#'
+#' plots the distribution of each group as a boxplot + half a violinplot with the data jittered
+#'
+#' @param y either a list where len(list) == # of groups, or a dataframe
+#' @param colors colors to use for the violinplots. defaults to viridis colors
+#' @param lab labels for the groups. Each must be unique.
+#' @param point_size size of the plotting characters for the data
+#' @param height controls the size of the violinplots. defaults to 0.4 but your mileage will vary
+#' 
+#'
+#' @return a list of length 2. First element of the list is your data coerced into a data.table. Second element is the group names.
+#'
+#' @examples 
+#' violinplot(PlantGrowth)
+#' violinplot(iris %>% select(Species, Sepal.Length), xlab= "species", ylab="sepal length")
+#'
+#' @export
+
+violinplot <- function(y, colors="viridis", lab=NA,point_size=1.0, height=0.4, ...){
+# if the data are entered as a list, coerse to a dataframe
+
+if(is.data.frame(y)){
+  print("data frame")
+  # if the first column contains the group names:
+  if(is.factor(y[,1])){
+    names(y) <- c("groups", "dat")
+  }
+  else{
+    names(y) <- c("dat", "groups")
+  }
+  labels<-levels(y$groups)
+  df <- data.table(y)
+  df %>% setkey(groups)
+  
+}
+
+else{
+  # if its a list, turn it into a dataframe
+  # this is a stupid way to make this data frame, but whatever:
+  if(missing(lab)){
+    lab <- letters[1:length(y)]
+    print(paste("data entered as a list of length ", length(y)))
+  }
+  labels <- c()
+  sizes <- sapply(y,length)
+  for(i in 1:length(y)){
+    labels <- c(labels,rep(lab[i], sizes[i]))
+  }
+  df <- data.frame(matrix(unlist(y), nrow=length(unlist(y)), byrow=T),labels)
+  names(df)<-c("dat","groups")
+  y <- df$dat
+  x <- df$groups
+  df %<>% data.table
+  df %>% setkey(groups)
+}
+
+# get number of groups:
+n_groups <- length(levels(df$groups))
+print(paste("number of groups: ", n_groups))
+
+# get the colors right
+if(colors == "viridis"){
+  colors <- viridis(n_groups+2)[2:(n_groups+1)]
+  print(colors)
+}
+
+box<- boxplot(df$dat~df$groups, border="white",at=0.95:n_groups-0.05, frame=F, xaxt="n", yaxt="n")
+
+# plot the densities
+for(i in 1:n_groups){
+  group <- levels(df$groups)[i]
+  # for each group, get a density estimate
+  d <- density(df[group]$dat)
+  # plot one half the plot
+  if(missing(height)){
+    height <- 0.15*n_groups
+  }
+  y <- (d$y*height)+i
+  polygon(y, d$x, col = colors[i], border=FALSE)
+  # plot the other half
+  #y_otherside <- y - ((y-i)*2)
+  #polygon(y_otherside, d$x, col = colors[i], border=FALSE)
+  # plot points:
+  #points(rep(i, nrow(df[labels[i]])), jitter(df[labels[i]]$dat), pch=16)
+}
+# stripchart(df$dat~df$groups,method="jitter", jitter=0.05,add=T,vertical=T, at=(1:n_groups)-0.1,pch=16,cex=0.8)
+Boxplot(df$dat~df$groups,boxwex=0.1,col="#00000000",add=T,at=0.95:n_groups-0.05, frame=F, pars = list(medlty = 1, whisklty = c(1, 1), medcex = 0.7, outcex = 0, staplelty = "blank"),xaxt="n", yaxt="n", cex.lab=1.2,...)
+
+beeswarm(df$dat~df$groups, method="hex", priority="density", pch=16, side=1, add=T, cex=point_size, frame=F,xaxt="n", yaxt="n")
+
+
+# add axes
+for(i in 1:n_groups){
+  mtext(unique(labels)[i],side=1, at=i)
+}
+axis(side=2)
+return(list(df, labels))
+}
+
+
+
+#' boxplot + violinplot with data
+#'
+#' plots the distribution of each group as a boxplot + a violinplot with the data jittered
+#'
+#' @param y either a list where len(list) == # of groups, or a dataframe
+#' @param colors colors to use for the violinplots. defaults to viridis colors
+#' @param lab labels for the groups. Each must be unique.
+#' @param point_size size of the plotting characters for the data
+#' @param height controls the size of the violinplots. defaults to 0.4 but your mileage will vary
+#' @param point_color color of the plotting characters
+#' 
+#'
+#' @return a list of length 2. First element of the list is your data coerced into a data.table. Second element is the group names.
+#'
+#' @examples 
+#' violinplot2(PlantGrowth, height=0.2)
+#' violinplot2(iris %>% select(Species, Sepal.Length), xlab= "species", ylab="sepal length")
+#'
+#' @export
+
+violinplot2 <- function(y, colors=viridis(5) %>% addAlpha(0.6), lab=NA,point_size=1, height=0.4, point_col="black", ...){
+  
+  # if the data are entered as a list, coerse to a dataframe
+  
+  if(is.data.frame(y)){
+    print("data frame")
+    # if the first column contains the group names:
+    if(is.factor(y[,1])){
+      names(y) <- c("groups", "dat")
+    }
+    else{
+      names(y) <- c("dat", "groups")
+    }
+    labels<-levels(y$groups)
+    df <- data.table(y)
+    df %>% setkey(groups)
+    
+  }
+  
+  else{
+    # if its a list, turn it into a dataframe
+    # this is a stupid way to make this data frame, but whatever:
+    if(missing(lab)){
+      lab <- letters[1:length(y)]
+      print(paste("data entered as a list of length ", length(y)))
+    }
+    labels <- c()
+    sizes <- sapply(y,length)
+    for(i in 1:length(y)){
+      labels <- c(labels,rep(lab[i], sizes[i]))
+    }
+    df <- data.frame(matrix(unlist(y), nrow=length(unlist(y)), byrow=T),labels)
+    names(df)<-c("dat","groups")
+    y <- df$dat
+    x <- df$groups
+    df %<>% data.table
+    df %>% setkey(groups)
+  }
+  
+  
+  # get number of groups:
+  n_groups <- length(levels(df$groups))
+  print(paste("number of groups: ", n_groups))
+  
+  box<- boxplot(df$dat~df$groups, border="white",at=0.95:n_groups-0.05, frame=F, xaxt="n", yaxt="n")
+  
+  # plot the densities
+  for(i in 1:n_groups){
+    group <- levels(df$groups)[i]
+    # for each group, get a density estimate
+    d <- density(df[group]$dat)
+    # plot one half the plot
+    y <- (d$y*height)+i
+    polygon(y, d$x, col = colors[i], border=FALSE)
+    # plot the other half
+    y_otherside <- y - ((y-i)*2)
+    polygon(y_otherside, d$x, col = colors[i], border=FALSE)
+    # plot points:
+    #points(rep(i, nrow(df[labels[i]])), jitter(df[labels[i]]$dat), pch=16)
+  }
+  # stripchart(df$dat~df$groups,method="jitter", jitter=0.05,add=T,vertical=T, at=(1:n_groups)-0.1,pch=16,cex=0.8)
+  Boxplot(df$dat~df$groups,boxwex=0.3,col="#00000000",add=T,at=1:n_groups, frame=F, pars = list(medlty = 1, whisklty = c(1, 1), medcex = 1, outcex = 0, staplelty = "blank"),xaxt="n", yaxt="n", lwd=1.5, cex.lab=1.2,...)
+  
+  beeswarm(df$dat~df$groups, method="hex", priority="density", pch=16, add=T, cex=point_size, col= point_col, frame=F,xaxt="n", yaxt="n")
+  
+  
+  # add axes
+  for(i in 1:n_groups){
+    mtext(unique(labels)[i],side=1, at=i)
+  }
+  axis(side=2)
+  return(list(df, labels))
+}
+
 
 
 
