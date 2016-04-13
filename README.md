@@ -30,6 +30,10 @@ Copy and paste everything that looks `like this` into R
 
 To find the code to generate these plots and other examples, check the help files (i.e. `?bar`).
 
+* **violinplot()** -- boxplot + 1/2 of a violinplot + data jittered      
+![violinplot!](https://github.com/lukereding/redingPlot/raw/master/examples/violinplot.png)
+* **violinplot2()** -- boxplot + violinplot on top + data jittered     
+![violinplot2!](https://github.com/lukereding/redingPlot/raw/master/examples/violinplot2.png)
 * **cats_meow()** -- barplot + mean with 95% confidence interval + data jittered      
 ![meow!](https://github.com/lukereding/redingPlot/raw/master/examples/cats_meow.png)
 * **bar()** -- barplot with data jittered on top     
