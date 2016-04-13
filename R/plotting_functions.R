@@ -1186,7 +1186,7 @@ paired <- function(x, y, lab=NA, box_thickness = 0.2, plot_points=T, colors = c(
 
 violinplot <- function(y, colors="viridis", lab=NA,point_size=1.0, height=0.4, ...){
 # if the data are entered as a list, coerse to a dataframe
-
+require(data.table)
 if(is.data.frame(y)){
   print("data frame")
   # if the first column contains the group names:
@@ -1288,7 +1288,7 @@ return(list(df, labels))
 #' @export
 
 violinplot2 <- function(y, colors=viridis(5) %>% addAlpha(0.6), lab=NA,point_size=1, height=0.4, point_col="black", ...){
-  
+  require(data.table)
   # if the data are entered as a list, coerse to a dataframe
   
   if(is.data.frame(y)){
